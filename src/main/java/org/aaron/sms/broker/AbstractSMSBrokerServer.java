@@ -35,8 +35,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import io.netty.util.internal.logging.InternalLoggerFactory;
-import io.netty.util.internal.logging.Slf4JLoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -143,8 +141,6 @@ abstract class AbstractSMSBrokerServer {
 			log.warn("{} is not available, not staring server", getClass()
 					.getSimpleName());
 		} else {
-			InternalLoggerFactory.setDefaultFactory(new Slf4JLoggerFactory());
-
 			final ChannelInitializer<Channel> childHandler = new SMSProtocolChannelInitializer(
 					ServerHandler::new,
 					SMSProtocol.ClientToBrokerMessage.getDefaultInstance());

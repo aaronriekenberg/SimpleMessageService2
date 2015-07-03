@@ -37,8 +37,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import io.netty.util.internal.logging.InternalLoggerFactory;
-import io.netty.util.internal.logging.Slf4JLoggerFactory;
 
 import java.util.Collections;
 import java.util.Set;
@@ -188,8 +186,6 @@ abstract class AbstractSMSConnection implements SMSConnection {
 	public void start() {
 		checkState(connectionState.compareAndSet(ConnectionState.NOT_STARTED,
 				ConnectionState.RUNNING), "Invalid state for start");
-
-		InternalLoggerFactory.setDefaultFactory(new Slf4JLoggerFactory());
 
 		reconnectAsync(0, TimeUnit.SECONDS);
 	}
