@@ -9,7 +9,7 @@ public class SMSBroker {
 
 	private final SMSTopicContainer topicContainer = new SMSTopicContainer();
 
-	private final ArrayList<AbstractSMSBrokerServer> servers = new ArrayList<>();
+	private final ArrayList<SMSBrokerServer> servers = new ArrayList<>();
 
 	public SMSBroker() {
 
@@ -26,12 +26,12 @@ public class SMSBroker {
 	}
 
 	public SMSBroker start() {
-		servers.forEach(AbstractSMSBrokerServer::start);
+		servers.forEach(SMSBrokerServer::start);
 		return this;
 	}
 
 	public SMSBroker destroy() {
-		servers.forEach(AbstractSMSBrokerServer::destroy);
+		servers.forEach(SMSBrokerServer::destroy);
 		return this;
 	}
 

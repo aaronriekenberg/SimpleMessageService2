@@ -22,7 +22,7 @@ class SMSBrokerUnixServer extends AbstractSMSBrokerServer {
 	}
 
 	@Override
-	protected boolean isAvailable() {
+	public boolean isAvailable() {
 		return UnixEventLoopGroupContainer.isAvailable();
 	}
 

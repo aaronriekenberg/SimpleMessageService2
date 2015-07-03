@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
-abstract class AbstractSMSBrokerServer {
+abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(AbstractSMSBrokerServer.class);
@@ -101,7 +101,8 @@ abstract class AbstractSMSBrokerServer {
 				"topicContainer is null");
 	}
 
-	protected boolean isAvailable() {
+	@Override
+	public boolean isAvailable() {
 		return true;
 	}
 
@@ -110,6 +111,7 @@ abstract class AbstractSMSBrokerServer {
 	protected abstract ChannelFuture doBootstrap(
 			ChannelInitializer<Channel> childHandler);
 
+	@Override
 	public void start() {
 		if (!isAvailable()) {
 			log.warn("{} is not available, not staring server", getClass()
@@ -132,6 +134,7 @@ abstract class AbstractSMSBrokerServer {
 
 	protected abstract void doDestroy();
 
+	@Override
 	public void destroy() {
 		log.info("destroy");
 
@@ -148,14 +151,17 @@ abstract class AbstractSMSBrokerServer {
 		});
 	}
 
+	@Override
 	public boolean isDestroyed() {
 		return destroyed.get();
 	}
 
+	@Override
 	public void awaitDestroyed() throws InterruptedException {
 		destroyedLatch.await();
 	}
 
+	@Override
 	public void awaitDestroyedUninterruptible() {
 		while (!isDestroyed()) {
 			Uninterruptibles.awaitUninterruptibly(destroyedLatch);
