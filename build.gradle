@@ -19,3 +19,7 @@ jar {
     baseName = 'simple-message-service'
     version =  '2.0'
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
