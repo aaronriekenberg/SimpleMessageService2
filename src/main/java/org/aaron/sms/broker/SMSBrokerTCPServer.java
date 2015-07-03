@@ -1,5 +1,6 @@
 package org.aaron.sms.broker;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -18,7 +19,7 @@ class SMSBrokerTCPServer extends AbstractSMSBrokerServer {
 	public SMSBrokerTCPServer(SMSTopicContainer topicContainer,
 			InetSocketAddress bindAddress) {
 		super(topicContainer);
-		this.bindAddress = bindAddress;
+		this.bindAddress = checkNotNull(bindAddress, "bindAddress is null");
 	}
 
 	@Override
