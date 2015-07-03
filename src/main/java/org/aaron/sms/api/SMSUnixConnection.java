@@ -34,7 +34,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.unix.DomainSocketAddress;
 
-import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 import org.aaron.sms.eventloop.UnixEventLoopGroupContainer;
@@ -47,16 +46,16 @@ import org.aaron.sms.eventloop.UnixEventLoopGroupContainer;
  */
 public class SMSUnixConnection extends AbstractSMSConnection {
 
-	private final Path brokerSocketPath;
+	private final DomainSocketAddress brokerAddress;
 
 	/**
 	 * Constructor method
 	 * 
-	 * @param brokerSocketPath
-	 *            Broker socket path
+	 * @param brokerAddress
+	 *            Broker address
 	 */
-	public SMSUnixConnection(Path brokerSocketPath) {
-		this(brokerSocketPath, 1, TimeUnit.SECONDS);
+	public SMSUnixConnection(DomainSocketAddress brokerAddress) {
+		this(brokerAddress, 1, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -69,12 +68,12 @@ public class SMSUnixConnection extends AbstractSMSConnection {
 	 * @param reconnect
 	 *            delay unit reconnect delay time unit
 	 */
-	public SMSUnixConnection(Path brokerSocketPath, long reconnectDelay,
-			TimeUnit reconnectDelayUnit) {
+	public SMSUnixConnection(DomainSocketAddress brokerAddress,
+			long reconnectDelay, TimeUnit reconnectDelayUnit) {
 		super(reconnectDelay, reconnectDelayUnit);
 
-		this.brokerSocketPath = checkNotNull(brokerSocketPath,
-				"brokerSocketPath is null");
+		this.brokerAddress = checkNotNull(brokerAddress,
+				"brokerAddress is null");
 	}
 
 	@Override
@@ -82,8 +81,7 @@ public class SMSUnixConnection extends AbstractSMSConnection {
 			ChannelInitializer<Channel> channelInitializer) {
 		return new Bootstrap().group(getEventLoopGroup())
 				.channel(UnixEventLoopGroupContainer.getClientChannelClass())
-				.handler(channelInitializer)
-				.connect(new DomainSocketAddress(brokerSocketPath.toFile()));
+				.handler(channelInitializer).connect(brokerAddress);
 	}
 
 	@Override

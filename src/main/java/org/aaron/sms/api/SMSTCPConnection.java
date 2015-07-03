@@ -26,7 +26,6 @@ package org.aaron.sms.api;
  * #L%
  */
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -35,6 +34,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 import org.aaron.sms.eventloop.TCPEventLoopGroupContainer;
@@ -49,41 +49,35 @@ public class SMSTCPConnection extends AbstractSMSConnection {
 
 	private static final Integer CONNECT_TIMEOUT_MS = 5_000;
 
-	private final String brokerAddress;
-
-	private final int brokerPort;
+	private final InetSocketAddress brokerAddress;
 
 	/**
 	 * Constructor method
 	 * 
-	 * @param serverAddress
+	 * @param brokerAddress
 	 *            Broker address
 	 * @param serverPort
 	 */
-	public SMSTCPConnection(String brokerAddress, int brokerPort) {
-		this(brokerAddress, brokerPort, 1, TimeUnit.SECONDS);
+	public SMSTCPConnection(InetSocketAddress brokerAddress) {
+		this(brokerAddress, 1, TimeUnit.SECONDS);
 	}
 
 	/**
 	 * Constructor method
 	 * 
-	 * @param serverAddress
+	 * @param brokerAddress
 	 *            Broker address
-	 * @param serverPort
 	 * @param reconnect
 	 *            delay reconnect delay time
 	 * @param reconnect
 	 *            delay unit reconnect delay time unit
 	 */
-	public SMSTCPConnection(String brokerAddress, int brokerPort,
+	public SMSTCPConnection(InetSocketAddress brokerAddress,
 			long reconnectDelay, TimeUnit reconnectDelayUnit) {
 		super(reconnectDelay, reconnectDelayUnit);
 
 		this.brokerAddress = checkNotNull(brokerAddress,
 				"brokerAddress is null");
-
-		checkArgument(brokerPort > 0, "brokerPort must be positive");
-		this.brokerPort = brokerPort;
 	}
 
 	@Override
@@ -94,7 +88,7 @@ public class SMSTCPConnection extends AbstractSMSConnection {
 				.channel(TCPEventLoopGroupContainer.getClientChannelClass())
 				.handler(channelInitializer)
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS,
-						CONNECT_TIMEOUT_MS).connect(brokerAddress, brokerPort);
+						CONNECT_TIMEOUT_MS).connect(brokerAddress);
 	}
 
 	@Override

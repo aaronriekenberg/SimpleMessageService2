@@ -26,6 +26,8 @@ package org.aaron.sms.examples;
  * #L%
  */
 
+import io.netty.channel.unix.DomainSocketAddress;
+
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +51,8 @@ public class SMSUnixTestSender extends AbstractTestSender {
 
 	@Override
 	protected SMSConnection createConnection() {
-		return new SMSUnixConnection(Paths.get("/tmp", "sms-unix-socket"));
+		return new SMSUnixConnection(new DomainSocketAddress(Paths.get("/tmp",
+				"sms-unix-socket").toFile()));
 	}
 
 	private static final int NUM_SENDERS = 50;

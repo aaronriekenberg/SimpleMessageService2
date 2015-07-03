@@ -26,6 +26,7 @@ package org.aaron.sms.examples;
  * #L%
  */
 
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -48,7 +49,7 @@ public class SMSTCPTestSender extends AbstractTestSender {
 
 	@Override
 	protected SMSConnection createConnection() {
-		return new SMSTCPConnection("127.0.0.1", 10001);
+		return new SMSTCPConnection(new InetSocketAddress("127.0.0.1", 10001));
 	}
 
 	private static final int NUM_SENDERS = 50;

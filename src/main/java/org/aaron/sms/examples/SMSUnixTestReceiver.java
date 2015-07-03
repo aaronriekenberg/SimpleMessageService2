@@ -26,6 +26,8 @@ package org.aaron.sms.examples;
  * #L%
  */
 
+import io.netty.channel.unix.DomainSocketAddress;
+
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -48,7 +50,8 @@ public class SMSUnixTestReceiver extends AbstractTestReceiver {
 
 	@Override
 	protected SMSConnection createConnection() {
-		return new SMSUnixConnection(Paths.get("/tmp", "sms-unix-socket"));
+		return new SMSUnixConnection(new DomainSocketAddress(Paths.get("/tmp",
+				"sms-unix-socket").toFile()));
 	}
 
 	private static final int NUM_RECEIVERS = 50;

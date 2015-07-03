@@ -26,6 +26,7 @@ package org.aaron.sms.examples;
  * #L%
  */
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -47,7 +48,7 @@ public class SMSTCPTestReceiver extends AbstractTestReceiver {
 
 	@Override
 	protected SMSConnection createConnection() {
-		return new SMSTCPConnection("127.0.0.1", 10001);
+		return new SMSTCPConnection(new InetSocketAddress("127.0.0.1", 10001));
 	}
 
 	private static final int NUM_RECEIVERS = 50;
