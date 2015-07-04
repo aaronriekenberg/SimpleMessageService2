@@ -14,8 +14,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 public class SMSTCPTestSender extends AbstractTestSender {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SMSTCPTestSender.class);
+	private static final Logger log = LoggerFactory.getLogger(SMSTCPTestSender.class);
 
 	public SMSTCPTestSender(String topicName) {
 		super(topicName, MESSAGE_SIZE_BYTES, SLEEP_BETWEEN_SENDS_MS);
@@ -37,9 +36,8 @@ public class SMSTCPTestSender extends AbstractTestSender {
 		log.info("MESSAGE_SIZE_BYTES = {}", MESSAGE_SIZE_BYTES);
 		log.info("SLEEP_BETWEEN_SENDS_MS = {}", SLEEP_BETWEEN_SENDS_MS);
 
-		final List<Thread> threadList = IntStream.range(0, NUM_SENDERS)
-				.mapToObj(i -> "test.topic." + i).map(SMSTCPTestSender::new)
-				.map(Thread::new).collect(Collectors.toList());
+		final List<Thread> threadList = IntStream.range(0, NUM_SENDERS).mapToObj(i -> "test.topic." + i)
+				.map(SMSTCPTestSender::new).map(Thread::new).collect(Collectors.toList());
 
 		threadList.forEach(Thread::start);
 

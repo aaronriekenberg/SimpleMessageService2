@@ -16,8 +16,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 public class SMSUnixTestSender extends AbstractTestSender {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SMSUnixTestSender.class);
+	private static final Logger log = LoggerFactory.getLogger(SMSUnixTestSender.class);
 
 	public SMSUnixTestSender(String topicName) {
 		super(topicName, MESSAGE_SIZE_BYTES, SLEEP_BETWEEN_SENDS_MS);
@@ -25,8 +24,7 @@ public class SMSUnixTestSender extends AbstractTestSender {
 
 	@Override
 	protected SMSConnection createConnection() {
-		return new SMSUnixConnection(new DomainSocketAddress(Paths.get("/tmp",
-				"sms-unix-socket").toFile()));
+		return new SMSUnixConnection(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()));
 	}
 
 	private static final int NUM_SENDERS = 50;
@@ -40,9 +38,8 @@ public class SMSUnixTestSender extends AbstractTestSender {
 		log.info("MESSAGE_SIZE_BYTES = {}", MESSAGE_SIZE_BYTES);
 		log.info("SLEEP_BETWEEN_SENDS_MS = {}", SLEEP_BETWEEN_SENDS_MS);
 
-		final List<Thread> threadList = IntStream.range(0, NUM_SENDERS)
-				.mapToObj(i -> "test.topic." + i).map(SMSUnixTestSender::new)
-				.map(Thread::new).collect(Collectors.toList());
+		final List<Thread> threadList = IntStream.range(0, NUM_SENDERS).mapToObj(i -> "test.topic." + i)
+				.map(SMSUnixTestSender::new).map(Thread::new).collect(Collectors.toList());
 
 		threadList.forEach(Thread::start);
 

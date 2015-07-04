@@ -16,8 +16,7 @@ class SMSBrokerTCPServer extends AbstractSMSBrokerServer {
 
 	private final InetSocketAddress bindAddress;
 
-	public SMSBrokerTCPServer(SMSTopicContainer topicContainer,
-			InetSocketAddress bindAddress) {
+	public SMSBrokerTCPServer(SMSTopicContainer topicContainer, InetSocketAddress bindAddress) {
 		super(topicContainer);
 		this.bindAddress = checkNotNull(bindAddress, "bindAddress is null");
 	}
@@ -30,10 +29,8 @@ class SMSBrokerTCPServer extends AbstractSMSBrokerServer {
 	@Override
 	protected ChannelFuture doBootstrap(ChannelInitializer<Channel> childHandler) {
 		final ServerBootstrap b = new ServerBootstrap();
-		b.group(getEventLoopGroup())
-				.channel(TCPEventLoopGroupContainer.getServerChannelClass())
-				.childHandler(childHandler)
-				.option(ChannelOption.SO_REUSEADDR, true);
+		b.group(getEventLoopGroup()).channel(TCPEventLoopGroupContainer.getServerChannelClass())
+				.childHandler(childHandler).option(ChannelOption.SO_REUSEADDR, true);
 		return b.bind(bindAddress);
 	}
 

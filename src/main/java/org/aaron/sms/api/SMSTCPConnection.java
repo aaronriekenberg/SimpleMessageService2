@@ -46,23 +46,17 @@ public class SMSTCPConnection extends AbstractSMSConnection {
 	 * @param reconnect
 	 *            delay unit reconnect delay time unit
 	 */
-	public SMSTCPConnection(InetSocketAddress brokerAddress,
-			long reconnectDelay, TimeUnit reconnectDelayUnit) {
+	public SMSTCPConnection(InetSocketAddress brokerAddress, long reconnectDelay, TimeUnit reconnectDelayUnit) {
 		super(reconnectDelay, reconnectDelayUnit);
 
-		this.brokerAddress = checkNotNull(brokerAddress,
-				"brokerAddress is null");
+		this.brokerAddress = checkNotNull(brokerAddress, "brokerAddress is null");
 	}
 
 	@Override
-	protected ChannelFuture doBootstrapConnection(
-			ChannelInitializer<Channel> channelInitializer) {
-		return new Bootstrap()
-				.group(getEventLoopGroup())
-				.channel(TCPEventLoopGroupContainer.getClientChannelClass())
-				.handler(channelInitializer)
-				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS,
-						CONNECT_TIMEOUT_MS).connect(brokerAddress);
+	protected ChannelFuture doBootstrapConnection(ChannelInitializer<Channel> channelInitializer) {
+		return new Bootstrap().group(getEventLoopGroup()).channel(TCPEventLoopGroupContainer.getClientChannelClass())
+				.handler(channelInitializer).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT_MS)
+				.connect(brokerAddress);
 	}
 
 	@Override

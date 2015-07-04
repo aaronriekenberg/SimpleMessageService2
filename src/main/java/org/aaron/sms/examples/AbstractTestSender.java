@@ -10,8 +10,7 @@ import com.google.protobuf.ByteString;
 
 public abstract class AbstractTestSender implements Runnable {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(AbstractTestSender.class);
+	private static final Logger log = LoggerFactory.getLogger(AbstractTestSender.class);
 
 	private final String topicName;
 
@@ -19,8 +18,7 @@ public abstract class AbstractTestSender implements Runnable {
 
 	private final long sleepBetweenSendsMS;
 
-	public AbstractTestSender(String topicName, int messageSizeBytes,
-			long sleepBetweenSendsMS) {
+	public AbstractTestSender(String topicName, int messageSizeBytes, long sleepBetweenSendsMS) {
 		this.topicName = checkNotNull(topicName);
 		this.messageSizeBytes = messageSizeBytes;
 		this.sleepBetweenSendsMS = sleepBetweenSendsMS;
@@ -31,13 +29,12 @@ public abstract class AbstractTestSender implements Runnable {
 		try {
 			final SMSConnection smsConnection = createConnection();
 
-			smsConnection.registerConnectionStateListener(newState -> log.info(
-					"connection state changed {}", newState));
+			smsConnection
+					.registerConnectionStateListener(newState -> log.info("connection state changed {}", newState));
 
 			smsConnection.start();
 
-			final ByteString buffer = ByteString
-					.copyFrom(new byte[messageSizeBytes]);
+			final ByteString buffer = ByteString.copyFrom(new byte[messageSizeBytes]);
 			while (true) {
 				smsConnection.writeToTopic(topicName, buffer);
 				Thread.sleep(sleepBetweenSendsMS);

@@ -13,11 +13,8 @@ import com.google.common.util.concurrent.Uninterruptibles;
 public class SMSBrokerMain {
 
 	public static void main(String[] args) {
-		new SMSBroker()
-				.addTCPServer(new InetSocketAddress(10001))
-				.addUnixServer(
-						new DomainSocketAddress(Paths.get("/tmp",
-								"sms-unix-socket").toFile())).start();
+		new SMSBroker().addTCPServer(new InetSocketAddress(10001))
+				.addUnixServer(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile())).start();
 
 		while (true) {
 			Uninterruptibles.sleepUninterruptibly(1, TimeUnit.MINUTES);

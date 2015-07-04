@@ -13,8 +13,7 @@ class SMSTopic {
 
 	private static final Logger log = LoggerFactory.getLogger(SMSTopic.class);
 
-	private final DefaultChannelGroup channelGroup = new DefaultChannelGroup(
-			GlobalEventExecutor.INSTANCE);
+	private final DefaultChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
 	public SMSTopic(String topicName) {
 		checkNotNull(topicName, "topicName is null");

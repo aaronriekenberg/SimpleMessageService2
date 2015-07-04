@@ -24,11 +24,9 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(AbstractSMSBrokerServer.class);
+	private static final Logger log = LoggerFactory.getLogger(AbstractSMSBrokerServer.class);
 
-	private final DefaultChannelGroup allChannels = new DefaultChannelGroup(
-			GlobalEventExecutor.INSTANCE);
+	private final DefaultChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
 	private final AtomicBoolean destroyed = new AtomicBoolean(false);
 
@@ -38,12 +36,10 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
 	private final SMSTopicContainer topicContainer;
 
-	private class ServerHandler extends
-			SimpleChannelInboundHandler<SMSProtocol.ClientToBrokerMessage> {
+	private class ServerHandler extends SimpleChannelInboundHandler<SMSProtocol.ClientToBrokerMessage> {
 
 		@Override
-		public void channelRegistered(ChannelHandlerContext ctx)
-				throws Exception {
+		public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 			log.debug("channelRegistered {}", ctx.channel());
 
 			/*
@@ -71,8 +67,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 		}
 
 		@Override
-		public void channelUnregistered(ChannelHandlerContext ctx)
-				throws Exception {
+		public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
 			log.debug("channelUnregistered {}", ctx.channel());
 		}
 
@@ -83,11 +78,9 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 		}
 
 		@Override
-		public void channelRead0(ChannelHandlerContext ctx,
-				SMSProtocol.ClientToBrokerMessage message) {
+		public void channelRead0(ChannelHandlerContext ctx, SMSProtocol.ClientToBrokerMessage message) {
 			try {
-				log.debug("channelRead0 from {} message = '{}'", ctx.channel(),
-						message);
+				log.debug("channelRead0 from {} message = '{}'", ctx.channel(), message);
 				processIncomingMessage(ctx.channel(), message);
 			} catch (Exception e) {
 				log.warn("channelRead0", e);
@@ -97,8 +90,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 	}
 
 	public AbstractSMSBrokerServer(SMSTopicContainer topicContainer) {
-		this.topicContainer = checkNotNull(topicContainer,
-				"topicContainer is null");
+		this.topicContainer = checkNotNull(topicContainer, "topicContainer is null");
 	}
 
 	@Override
@@ -108,27 +100,22 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
 	protected abstract EventLoopGroup getEventLoopGroup();
 
-	protected abstract ChannelFuture doBootstrap(
-			ChannelInitializer<Channel> childHandler);
+	protected abstract ChannelFuture doBootstrap(ChannelInitializer<Channel> childHandler);
 
 	@Override
 	public void start() {
 		if (!isAvailable()) {
-			log.warn("{} is not available, not staring server", getClass()
-					.getSimpleName());
+			log.warn("{} is not available, not staring server", getClass().getSimpleName());
 		} else {
-			final ChannelInitializer<Channel> childHandler = new SMSProtocolChannelInitializer(
-					ServerHandler::new,
+			final ChannelInitializer<Channel> childHandler = new SMSProtocolChannelInitializer(ServerHandler::new,
 					SMSProtocol.ClientToBrokerMessage.getDefaultInstance());
 
 			final ChannelFuture channelFuture = doBootstrap(childHandler);
 
-			final Channel serverChannel = channelFuture.syncUninterruptibly()
-					.channel();
+			final Channel serverChannel = channelFuture.syncUninterruptibly().channel();
 			allChannels.add(serverChannel);
 
-			log.info("listening on {} ({})", serverChannel.localAddress(),
-					getEventLoopGroup());
+			log.info("listening on {} ({})", serverChannel.localAddress(), getEventLoopGroup());
 		}
 	}
 
@@ -168,18 +155,14 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 		}
 	}
 
-	private void processIncomingMessage(Channel channel,
-			SMSProtocol.ClientToBrokerMessage message) {
+	private void processIncomingMessage(Channel channel, SMSProtocol.ClientToBrokerMessage message) {
 		final String topicName = message.getTopicName();
 		final SMSTopic topic = topicContainer.getTopic(topicName);
 
 		switch (message.getMessageType()) {
 		case CLIENT_SEND_MESSAGE_TO_TOPIC:
-			topic.write(SMSProtocol.BrokerToClientMessage
-					.newBuilder()
-					.setMessageType(
-							BrokerToClientMessageType.BROKER_TOPIC_MESSAGE_PUBLISH)
-					.setTopicName(topicName)
+			topic.write(SMSProtocol.BrokerToClientMessage.newBuilder()
+					.setMessageType(BrokerToClientMessageType.BROKER_TOPIC_MESSAGE_PUBLISH).setTopicName(topicName)
 					.setMessagePayload(message.getMessagePayload()).build());
 			break;
 

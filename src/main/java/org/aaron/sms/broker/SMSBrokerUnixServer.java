@@ -15,8 +15,7 @@ class SMSBrokerUnixServer extends AbstractSMSBrokerServer {
 
 	private final DomainSocketAddress bindAddress;
 
-	public SMSBrokerUnixServer(SMSTopicContainer topicContainer,
-			DomainSocketAddress bindAddress) {
+	public SMSBrokerUnixServer(SMSTopicContainer topicContainer, DomainSocketAddress bindAddress) {
 		super(topicContainer);
 		this.bindAddress = checkNotNull(bindAddress, "bindAddress is null");
 	}
@@ -34,10 +33,8 @@ class SMSBrokerUnixServer extends AbstractSMSBrokerServer {
 	@Override
 	protected ChannelFuture doBootstrap(ChannelInitializer<Channel> childHandler) {
 		final ServerBootstrap b = new ServerBootstrap();
-		b.group(getEventLoopGroup())
-				.channel(UnixEventLoopGroupContainer.getServerChannelClass())
-				.childHandler(childHandler)
-				.option(ChannelOption.SO_REUSEADDR, true);
+		b.group(getEventLoopGroup()).channel(UnixEventLoopGroupContainer.getServerChannelClass())
+				.childHandler(childHandler).option(ChannelOption.SO_REUSEADDR, true);
 		return b.bind(bindAddress);
 	}
 

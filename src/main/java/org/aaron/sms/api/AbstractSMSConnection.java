@@ -29,14 +29,11 @@ import com.google.protobuf.ByteString;
 
 abstract class AbstractSMSConnection implements SMSConnection {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(AbstractSMSConnection.class);
+	private static final Logger log = LoggerFactory.getLogger(AbstractSMSConnection.class);
 
-	private final DefaultChannelGroup allChannels = new DefaultChannelGroup(
-			GlobalEventExecutor.INSTANCE);
+	private final DefaultChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-	private final DefaultChannelGroup connectedChannels = new DefaultChannelGroup(
-			GlobalEventExecutor.INSTANCE);
+	private final DefaultChannelGroup connectedChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
 	private final ConcurrentHashMap<String, SMSMessageListener> subscribedTopicToListener = new ConcurrentHashMap<>();
 
@@ -48,8 +45,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		DESTROYED
 	}
 
-	private final AtomicReference<ConnectionState> connectionState = new AtomicReference<>(
-			ConnectionState.NOT_STARTED);
+	private final AtomicReference<ConnectionState> connectionState = new AtomicReference<>(ConnectionState.NOT_STARTED);
 
 	private final Set<SMSConnectionStateListener> connectionStateListeners = Collections
 			.newSetFromMap(new ConcurrentHashMap<>());
@@ -60,16 +56,14 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
 	private final TimeUnit reconnectDelayUnit;
 
-	private class ClientHandler extends
-			SimpleChannelInboundHandler<SMSProtocol.BrokerToClientMessage> {
+	private class ClientHandler extends SimpleChannelInboundHandler<SMSProtocol.BrokerToClientMessage> {
 
 		public ClientHandler() {
 
 		}
 
 		@Override
-		public void channelRegistered(ChannelHandlerContext ctx)
-				throws Exception {
+		public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 			log.debug("channelRegistered {}", ctx.channel());
 
 			/*
@@ -102,8 +96,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		}
 
 		@Override
-		public void channelUnregistered(ChannelHandlerContext ctx)
-				throws Exception {
+		public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
 			log.debug("channelUnregistered {}", ctx.channel());
 		}
 
@@ -114,11 +107,9 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		}
 
 		@Override
-		public void channelRead0(ChannelHandlerContext ctx,
-				SMSProtocol.BrokerToClientMessage message) {
+		public void channelRead0(ChannelHandlerContext ctx, SMSProtocol.BrokerToClientMessage message) {
 			try {
-				log.debug("channelRead0 from {} message = '{}'", ctx.channel(),
-						message);
+				log.debug("channelRead0 from {} message = '{}'", ctx.channel(), message);
 				switch (message.getMessageType()) {
 				case BROKER_TOPIC_MESSAGE_PUBLISH:
 					handleBrokerTopicMessagePublish(message);
@@ -131,26 +122,22 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		}
 	}
 
-	public AbstractSMSConnection(long reconnectDelay,
-			TimeUnit reconnectDelayUnit) {
+	public AbstractSMSConnection(long reconnectDelay, TimeUnit reconnectDelayUnit) {
 		checkArgument(reconnectDelay > 0, "reconnectDelay must be positive");
 		this.reconnectDelay = reconnectDelay;
 
-		this.reconnectDelayUnit = checkNotNull(reconnectDelayUnit,
-				"reconnectDelayUnit is null");
+		this.reconnectDelayUnit = checkNotNull(reconnectDelayUnit, "reconnectDelayUnit is null");
 	}
 
 	@Override
-	public void registerConnectionStateListener(
-			SMSConnectionStateListener listener) {
+	public void registerConnectionStateListener(SMSConnectionStateListener listener) {
 		checkNotNull(listener, "listener is null");
 
 		connectionStateListeners.add(listener);
 	}
 
 	@Override
-	public void unregisterConnectionStateListener(
-			SMSConnectionStateListener listener) {
+	public void unregisterConnectionStateListener(SMSConnectionStateListener listener) {
 		checkNotNull(listener, "listener is null");
 
 		connectionStateListeners.remove(listener);
@@ -158,8 +145,8 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
 	@Override
 	public void start() {
-		checkState(connectionState.compareAndSet(ConnectionState.NOT_STARTED,
-				ConnectionState.RUNNING), "Invalid state for start");
+		checkState(connectionState.compareAndSet(ConnectionState.NOT_STARTED, ConnectionState.RUNNING),
+				"Invalid state for start");
 
 		reconnectAsync(0, TimeUnit.SECONDS);
 	}
@@ -169,16 +156,14 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		return (connectionState.get() == ConnectionState.RUNNING);
 	}
 
-	protected abstract ChannelFuture doBootstrapConnection(
-			ChannelInitializer<Channel> channelInitializer);
+	protected abstract ChannelFuture doBootstrapConnection(ChannelInitializer<Channel> channelInitializer);
 
 	private void bootstrapConnection() {
 		if (!isStarted()) {
 			return;
 		}
 
-		final ChannelInitializer<Channel> channelInitializer = new SMSProtocolChannelInitializer(
-				ClientHandler::new,
+		final ChannelInitializer<Channel> channelInitializer = new SMSProtocolChannelInitializer(ClientHandler::new,
 				SMSProtocol.BrokerToClientMessage.getDefaultInstance());
 		final ChannelFuture future = doBootstrapConnection(channelInitializer);
 		future.addListener(f -> {
@@ -201,8 +186,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
 			return;
 		}
 
-		getEventLoopGroup().schedule(() -> bootstrapConnection(), delay,
-				delayUnit);
+		getEventLoopGroup().schedule(() -> bootstrapConnection(), delay, delayUnit);
 	}
 
 	private void resubscribeToTopics() {
@@ -211,32 +195,21 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		}
 
 		log.debug("resubscribeToTopics {}", subscribedTopicToListener);
-		subscribedTopicToListener
-				.keySet()
-				.forEach(
-						topicName -> connectedChannels
-								.write(SMSProtocol.ClientToBrokerMessage
-										.newBuilder()
-										.setMessageType(
-												ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC)
-										.setTopicName(topicName)));
+		subscribedTopicToListener.keySet()
+				.forEach(topicName -> connectedChannels.write(SMSProtocol.ClientToBrokerMessage.newBuilder()
+						.setMessageType(ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC).setTopicName(topicName)));
 		connectedChannels.flush();
 	}
 
 	@Override
-	public void subscribeToTopic(String topicName,
-			SMSMessageListener messageListener) {
+	public void subscribeToTopic(String topicName, SMSMessageListener messageListener) {
 		checkNotNull(topicName, "topicName is null");
 		checkArgument(topicName.length() > 0, "topicName is empty");
 		checkNotNull(messageListener, "messageListener is null");
 
 		if (subscribedTopicToListener.put(topicName, messageListener) == null) {
-			connectedChannels
-					.writeAndFlush(SMSProtocol.ClientToBrokerMessage
-							.newBuilder()
-							.setMessageType(
-									ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC)
-							.setTopicName(topicName));
+			connectedChannels.writeAndFlush(SMSProtocol.ClientToBrokerMessage.newBuilder()
+					.setMessageType(ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC).setTopicName(topicName));
 		}
 	}
 
@@ -246,12 +219,8 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		checkArgument(topicName.length() > 0, "topicName is empty");
 
 		if (subscribedTopicToListener.remove(topicName) != null) {
-			connectedChannels
-					.writeAndFlush(SMSProtocol.ClientToBrokerMessage
-							.newBuilder()
-							.setMessageType(
-									ClientToBrokerMessageType.CLIENT_UNSUBSCRIBE_FROM_TOPIC)
-							.setTopicName(topicName));
+			connectedChannels.writeAndFlush(SMSProtocol.ClientToBrokerMessage.newBuilder()
+					.setMessageType(ClientToBrokerMessageType.CLIENT_UNSUBSCRIBE_FROM_TOPIC).setTopicName(topicName));
 		}
 	}
 
@@ -261,18 +230,15 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		checkArgument(topicName.length() > 0, "topicName is empty");
 		checkNotNull(message, "message is null");
 
-		connectedChannels.writeAndFlush(SMSProtocol.ClientToBrokerMessage
-				.newBuilder()
-				.setMessageType(
-						ClientToBrokerMessageType.CLIENT_SEND_MESSAGE_TO_TOPIC)
-				.setTopicName(topicName).setMessagePayload(message));
+		connectedChannels.writeAndFlush(SMSProtocol.ClientToBrokerMessage.newBuilder()
+				.setMessageType(ClientToBrokerMessageType.CLIENT_SEND_MESSAGE_TO_TOPIC).setTopicName(topicName)
+				.setMessagePayload(message));
 	}
 
 	@Override
 	public void destroy() {
 		destroyLock.doInWriteLock(() -> {
-			if (connectionState.compareAndSet(ConnectionState.RUNNING,
-					ConnectionState.DESTROYED)) {
+			if (connectionState.compareAndSet(ConnectionState.RUNNING, ConnectionState.DESTROYED)) {
 
 				connectionStateListeners.clear();
 
@@ -284,16 +250,13 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		});
 	}
 
-	private void handleBrokerTopicMessagePublish(
-			SMSProtocol.BrokerToClientMessage message) {
+	private void handleBrokerTopicMessagePublish(SMSProtocol.BrokerToClientMessage message) {
 		checkNotNull(message, "message is null");
 		checkNotNull(message.getTopicName(), "topic name is null");
-		checkArgument(message.getTopicName().length() > 0,
-				"topic name is emtpy");
+		checkArgument(message.getTopicName().length() > 0, "topic name is emtpy");
 		checkNotNull(message.getMessagePayload(), "message payload is null");
 
-		final SMSMessageListener listener = subscribedTopicToListener
-				.get(message.getTopicName());
+		final SMSMessageListener listener = subscribedTopicToListener.get(message.getTopicName());
 		if (listener != null) {
 			fireMessageListenerCallback(listener, message.getMessagePayload());
 		}
@@ -309,8 +272,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
 		});
 	}
 
-	private void fireMessageListenerCallback(SMSMessageListener listener,
-			ByteString message) {
+	private void fireMessageListenerCallback(SMSMessageListener listener, ByteString message) {
 		try {
 			listener.handleIncomingMessage(message);
 		} catch (Exception e) {

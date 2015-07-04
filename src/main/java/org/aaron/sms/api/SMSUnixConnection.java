@@ -42,19 +42,15 @@ public class SMSUnixConnection extends AbstractSMSConnection {
 	 * @param reconnect
 	 *            delay unit reconnect delay time unit
 	 */
-	public SMSUnixConnection(DomainSocketAddress brokerAddress,
-			long reconnectDelay, TimeUnit reconnectDelayUnit) {
+	public SMSUnixConnection(DomainSocketAddress brokerAddress, long reconnectDelay, TimeUnit reconnectDelayUnit) {
 		super(reconnectDelay, reconnectDelayUnit);
 
-		this.brokerAddress = checkNotNull(brokerAddress,
-				"brokerAddress is null");
+		this.brokerAddress = checkNotNull(brokerAddress, "brokerAddress is null");
 	}
 
 	@Override
-	protected ChannelFuture doBootstrapConnection(
-			ChannelInitializer<Channel> channelInitializer) {
-		return new Bootstrap().group(getEventLoopGroup())
-				.channel(UnixEventLoopGroupContainer.getClientChannelClass())
+	protected ChannelFuture doBootstrapConnection(ChannelInitializer<Channel> channelInitializer) {
+		return new Bootstrap().group(getEventLoopGroup()).channel(UnixEventLoopGroupContainer.getClientChannelClass())
 				.handler(channelInitializer).connect(brokerAddress);
 	}
 

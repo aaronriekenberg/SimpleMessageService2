@@ -22,13 +22,10 @@ public class SMSProtocolChannelInitializer extends ChannelInitializer<Channel> {
 
 	private final MessageLite messagePrototype;
 
-	public SMSProtocolChannelInitializer(
-			Supplier<? extends ChannelHandler> handlerSupplier,
+	public SMSProtocolChannelInitializer(Supplier<? extends ChannelHandler> handlerSupplier,
 			MessageLite messagePrototype) {
-		this.handlerSupplier = checkNotNull(handlerSupplier,
-				"handlerSupplier is null");
-		this.messagePrototype = checkNotNull(messagePrototype,
-				"messagePrototype is null");
+		this.handlerSupplier = checkNotNull(handlerSupplier, "handlerSupplier is null");
+		this.messagePrototype = checkNotNull(messagePrototype, "messagePrototype is null");
 	}
 
 	@Override
@@ -36,13 +33,10 @@ public class SMSProtocolChannelInitializer extends ChannelInitializer<Channel> {
 		final ChannelPipeline p = ch.pipeline();
 		p.addLast("logger", new LoggingHandler(LogLevel.DEBUG));
 
-		p.addLast("frameEncoder", new LengthFieldPrepender(
-				SMSProtocolConstants.MESSAGE_HEADER_LENGTH_BYTES));
+		p.addLast("frameEncoder", new LengthFieldPrepender(SMSProtocolConstants.MESSAGE_HEADER_LENGTH_BYTES));
 
-		p.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(
-				SMSProtocolConstants.MAX_MESSAGE_LENGTH_BYTES, 0,
-				SMSProtocolConstants.MESSAGE_HEADER_LENGTH_BYTES, 0,
-				SMSProtocolConstants.MESSAGE_HEADER_LENGTH_BYTES));
+		p.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(SMSProtocolConstants.MAX_MESSAGE_LENGTH_BYTES, 0,
+				SMSProtocolConstants.MESSAGE_HEADER_LENGTH_BYTES, 0, SMSProtocolConstants.MESSAGE_HEADER_LENGTH_BYTES));
 
 		p.addLast("protobufEncoder", new ProtobufEncoder());
 

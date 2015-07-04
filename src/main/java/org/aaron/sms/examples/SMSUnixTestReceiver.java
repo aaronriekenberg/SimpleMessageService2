@@ -15,8 +15,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 public class SMSUnixTestReceiver extends AbstractTestReceiver {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SMSUnixTestReceiver.class);
+	private static final Logger log = LoggerFactory.getLogger(SMSUnixTestReceiver.class);
 
 	public SMSUnixTestReceiver(String topicName) {
 		super(topicName);
@@ -24,8 +23,7 @@ public class SMSUnixTestReceiver extends AbstractTestReceiver {
 
 	@Override
 	protected SMSConnection createConnection() {
-		return new SMSUnixConnection(new DomainSocketAddress(Paths.get("/tmp",
-				"sms-unix-socket").toFile()));
+		return new SMSUnixConnection(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()));
 	}
 
 	private static final int NUM_RECEIVERS = 50;
@@ -33,8 +31,7 @@ public class SMSUnixTestReceiver extends AbstractTestReceiver {
 	public static void main(String[] args) {
 		log.info("NUM_RECEIVERS = {}", NUM_RECEIVERS);
 
-		IntStream.range(0, NUM_RECEIVERS).mapToObj(i -> "test.topic." + i)
-				.map(SMSUnixTestReceiver::new)
+		IntStream.range(0, NUM_RECEIVERS).mapToObj(i -> "test.topic." + i).map(SMSUnixTestReceiver::new)
 				.forEach(SMSUnixTestReceiver::start);
 
 		while (true) {

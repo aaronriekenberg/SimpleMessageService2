@@ -25,16 +25,14 @@ public interface SMSConnection {
 	 * 
 	 * @param listener
 	 */
-	public void registerConnectionStateListener(
-			SMSConnectionStateListener listener);
+	public void registerConnectionStateListener(SMSConnectionStateListener listener);
 
 	/**
 	 * Unregister a listener for connection state changes.
 	 * 
 	 * @param listener
 	 */
-	public void unregisterConnectionStateListener(
-			SMSConnectionStateListener listener);
+	public void unregisterConnectionStateListener(SMSConnectionStateListener listener);
 
 	/**
 	 * Subscribe to a topic to begin receiving messages from it.
@@ -44,8 +42,7 @@ public interface SMSConnection {
 	 * @param messageListener
 	 *            message listener
 	 */
-	public void subscribeToTopic(String topicName,
-			SMSMessageListener messageListener);
+	public void subscribeToTopic(String topicName, SMSMessageListener messageListener);
 
 	/**
 	 * Unsubscribe from a topic to stop receiving messages from it
