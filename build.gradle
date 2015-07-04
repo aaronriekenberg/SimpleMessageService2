@@ -1,22 +1,22 @@
 subprojects {
-	apply plugin: 'java'
-	apply plugin: 'eclipse'
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
 
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-	repositories {
-    	mavenCentral()
-	}
+    repositories {
+        mavenCentral()
+    }
 
-	dependencies {
-    	compile 'ch.qos.logback:logback-classic:1.1.3'
-    	compile 'com.google.guava:guava:18.0'
-	}
+    dependencies {
+        compile 'ch.qos.logback:logback-classic:1.1.3'
+        compile 'com.google.guava:guava:18.0'
+    }
 
-	version = 2.0
+    version = 2.0
 }
-	
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
 }
