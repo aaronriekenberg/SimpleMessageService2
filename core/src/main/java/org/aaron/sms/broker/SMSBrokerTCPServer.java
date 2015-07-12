@@ -34,9 +34,4 @@ class SMSBrokerTCPServer extends AbstractSMSBrokerServer {
 		return b.bind(bindAddress);
 	}
 
-	@Override
-	protected void doDestroy() {
-
-	}
-
 }

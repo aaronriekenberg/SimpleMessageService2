@@ -119,8 +119,6 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 		}
 	}
 
-	protected abstract void doDestroy();
-
 	@Override
 	public void destroy() {
 		log.info("destroy");
@@ -129,8 +127,6 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 			if (destroyed.compareAndSet(false, true)) {
 
 				allChannels.close();
-
-				doDestroy();
 
 				destroyedLatch.countDown();
 

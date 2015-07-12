@@ -1,6 +1,9 @@
 package org.aaron.sms.broker;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import org.aaron.sms.eventloop.UnixEventLoopGroupContainer;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -8,8 +11,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.unix.DomainSocketAddress;
-
-import org.aaron.sms.eventloop.UnixEventLoopGroupContainer;
 
 class SMSBrokerUnixServer extends AbstractSMSBrokerServer {
 
@@ -36,11 +37,6 @@ class SMSBrokerUnixServer extends AbstractSMSBrokerServer {
 		b.group(getEventLoopGroup()).channel(UnixEventLoopGroupContainer.getServerChannelClass())
 				.childHandler(childHandler).option(ChannelOption.SO_REUSEADDR, true);
 		return b.bind(bindAddress);
-	}
-
-	@Override
-	protected void doDestroy() {
-
 	}
 
 }
