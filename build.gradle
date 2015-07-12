@@ -14,7 +14,7 @@ subprojects {
         compile 'com.google.guava:guava:18.0'
     }
 
-    version = 2.0
+    version = '2.0-SNAPSHOT'
 }
 
 task wrapper(type: Wrapper) {
