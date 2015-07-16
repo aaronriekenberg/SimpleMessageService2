@@ -1,1 +1,1 @@
-include "core", "examples"
+include "sms-core", "sms-examples"
