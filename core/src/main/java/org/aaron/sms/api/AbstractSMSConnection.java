@@ -58,10 +58,6 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
 	private class ClientHandler extends SimpleChannelInboundHandler<SMSProtocol.BrokerToClientMessage> {
 
-		public ClientHandler() {
-
-		}
-
 		@Override
 		public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 			log.debug("channelRegistered {}", ctx.channel());
