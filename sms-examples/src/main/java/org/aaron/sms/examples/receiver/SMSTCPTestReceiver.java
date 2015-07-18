@@ -1,4 +1,4 @@
-package org.aaron.sms.examples;
+package org.aaron.sms.examples.receiver;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;

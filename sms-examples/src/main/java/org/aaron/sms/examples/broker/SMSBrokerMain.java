@@ -1,4 +1,4 @@
-package org.aaron.sms.examples;
+package org.aaron.sms.examples.broker;
 
 import io.netty.channel.unix.DomainSocketAddress;
 

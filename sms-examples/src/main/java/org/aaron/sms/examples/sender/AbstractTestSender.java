@@ -1,4 +1,4 @@
-package org.aaron.sms.examples;
+package org.aaron.sms.examples.sender;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

@@ -1,28 +1,30 @@
-package org.aaron.sms.examples;
+package org.aaron.sms.examples.sender;
 
-import java.net.InetSocketAddress;
+import io.netty.channel.unix.DomainSocketAddress;
+
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.aaron.sms.api.SMSConnection;
-import org.aaron.sms.api.SMSTCPConnection;
+import org.aaron.sms.api.SMSUnixConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
-public class SMSTCPTestSender extends AbstractTestSender {
+public class SMSUnixTestSender extends AbstractTestSender {
 
-	private static final Logger log = LoggerFactory.getLogger(SMSTCPTestSender.class);
+	private static final Logger log = LoggerFactory.getLogger(SMSUnixTestSender.class);
 
-	public SMSTCPTestSender(String topicName) {
+	public SMSUnixTestSender(String topicName) {
 		super(topicName, MESSAGE_SIZE_BYTES, SLEEP_BETWEEN_SENDS_MS);
 	}
 
 	@Override
 	protected SMSConnection createConnection() {
-		return new SMSTCPConnection(new InetSocketAddress("127.0.0.1", 10001));
+		return new SMSUnixConnection(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()));
 	}
 
 	private static final int NUM_SENDERS = 50;
@@ -37,11 +39,10 @@ public class SMSTCPTestSender extends AbstractTestSender {
 		log.info("SLEEP_BETWEEN_SENDS_MS = {}", SLEEP_BETWEEN_SENDS_MS);
 
 		final List<Thread> threadList = IntStream.range(0, NUM_SENDERS).mapToObj(i -> "test.topic." + i)
-				.map(SMSTCPTestSender::new).map(Thread::new).collect(Collectors.toList());
+				.map(SMSUnixTestSender::new).map(Thread::new).collect(Collectors.toList());
 
 		threadList.forEach(Thread::start);
 
 		threadList.forEach(Uninterruptibles::joinUninterruptibly);
 	}
-
 }
