@@ -4,10 +4,10 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 
 class EpollEventLoopGroupContainer {
 
-	public static final EpollEventLoopGroup EVENT_LOOP_GROUP = new EpollEventLoopGroup();
+    public static final EpollEventLoopGroup EVENT_LOOP_GROUP = new EpollEventLoopGroup();
 
-	private EpollEventLoopGroupContainer() {
+    private EpollEventLoopGroupContainer() {
 
-	}
+    }
 
 }

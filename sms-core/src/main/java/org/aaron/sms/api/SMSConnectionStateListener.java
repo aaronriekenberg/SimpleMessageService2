@@ -6,13 +6,12 @@ package org.aaron.sms.api;
 @FunctionalInterface
 public interface SMSConnectionStateListener {
 
-	/**
-	 * Notification that the state of the network connection between
-	 * SMSConnection and the broker has changed.
-	 * 
-	 * @param newState
-	 *            new connection state
-	 */
-	public void connectionStateChanged(SMSConnectionState newState);
+    /**
+     * Notification that the state of the network connection between
+     * SMSConnection and the broker has changed.
+     *
+     * @param newState new connection state
+     */
+    public void connectionStateChanged(SMSConnectionState newState);
 
 }

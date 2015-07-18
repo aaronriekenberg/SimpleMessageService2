@@ -8,12 +8,11 @@ import com.google.protobuf.ByteString;
 @FunctionalInterface
 public interface SMSMessageListener {
 
-	/**
-	 * Handle an incoming message for a topic subscription.
-	 * 
-	 * @param message
-	 *            message payload
-	 */
-	public void handleIncomingMessage(ByteString message);
+    /**
+     * Handle an incoming message for a topic subscription.
+     *
+     * @param message message payload
+     */
+    public void handleIncomingMessage(ByteString message);
 
 }

@@ -5,8 +5,8 @@ package org.aaron.sms.api;
  */
 public enum SMSConnectionState {
 
-	CONNECTED_TO_BROKER,
+    CONNECTED_TO_BROKER,
 
-	NOT_CONNECTED_TO_BROKER
+    NOT_CONNECTED_TO_BROKER
 
 }
