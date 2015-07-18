@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 
-public abstract class AbstractTestSender implements Runnable {
+abstract class AbstractTestSender implements Runnable {
 
 	private static final Logger log = LoggerFactory.getLogger(AbstractTestSender.class);
 
