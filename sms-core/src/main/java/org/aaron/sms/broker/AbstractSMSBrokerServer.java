@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractSMSBrokerServer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractSMSBrokerServer.class);
 
     private final DefaultChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
@@ -46,7 +46,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
     @Override
     public void start() {
         if (!isAvailable()) {
-            log.warn("{} is not available, not staring server", getClass().getSimpleName());
+            LOG.warn("{} is not available, not staring server", getClass().getSimpleName());
         } else {
             final ChannelInitializer<Channel> childHandler = new SMSProtocolChannelInitializer(ServerHandler::new,
                     SMSProtocol.ClientToBrokerMessage.getDefaultInstance());
@@ -56,13 +56,13 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
             final Channel serverChannel = channelFuture.syncUninterruptibly().channel();
             allChannels.add(serverChannel);
 
-            log.info("listening on {} ({})", serverChannel.localAddress(), getEventLoopGroup());
+            LOG.info("listening on {} ({})", serverChannel.localAddress(), getEventLoopGroup());
         }
     }
 
     @Override
     public void destroy() {
-        log.info("destroy");
+        LOG.info("destroy");
 
         destroyLock.doInWriteLock(() -> {
             if (destroyed.compareAndSet(false, true)) {
@@ -118,7 +118,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
         @Override
         public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-            log.debug("channelRegistered {}", ctx.channel());
+            LOG.debug("channelRegistered {}", ctx.channel());
 
 			/*
              * Need to synchronize on destroyLock to avoid another thread
@@ -136,32 +136,32 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
-            log.info("channelActive {}", ctx.channel());
+            LOG.info("channelActive {}", ctx.channel());
         }
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) {
-            log.info("channelInactive {}", ctx.channel());
+            LOG.info("channelInactive {}", ctx.channel());
         }
 
         @Override
         public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-            log.debug("channelUnregistered {}", ctx.channel());
+            LOG.debug("channelUnregistered {}", ctx.channel());
         }
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-            log.debug("exceptionCaught {}", ctx.channel(), cause);
+            LOG.debug("exceptionCaught {}", ctx.channel(), cause);
             ctx.channel().close();
         }
 
         @Override
         public void channelRead0(ChannelHandlerContext ctx, SMSProtocol.ClientToBrokerMessage message) {
             try {
-                log.debug("channelRead0 from {} message = '{}'", ctx.channel(), message);
+                LOG.debug("channelRead0 from {} message = '{}'", ctx.channel(), message);
                 processIncomingMessage(ctx.channel(), message);
             } catch (Exception e) {
-                log.warn("channelRead0", e);
+                LOG.warn("channelRead0", e);
                 ctx.channel().close();
             }
         }

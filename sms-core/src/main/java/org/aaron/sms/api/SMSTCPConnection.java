@@ -25,7 +25,6 @@ public class SMSTCPConnection extends AbstractSMSConnection {
      * Constructor method
      *
      * @param brokerAddress Broker address
-     * @param serverPort
      */
     public SMSTCPConnection(InetSocketAddress brokerAddress) {
         this(brokerAddress, 1, TimeUnit.SECONDS);
@@ -34,9 +33,9 @@ public class SMSTCPConnection extends AbstractSMSConnection {
     /**
      * Constructor method
      *
-     * @param brokerAddress Broker address
-     * @param reconnect     delay reconnect delay time
-     * @param reconnect     delay unit reconnect delay time unit
+     * @param brokerAddress      Broker address
+     * @param reconnectDelay     delay reconnect delay time
+     * @param reconnectDelayUnit delay unit reconnect delay time unit
      */
     public SMSTCPConnection(InetSocketAddress brokerAddress, long reconnectDelay, TimeUnit reconnectDelayUnit) {
         super(reconnectDelay, reconnectDelayUnit);

@@ -12,7 +12,8 @@ import java.util.stream.IntStream;
 
 public class SMSTCPTestReceiver extends AbstractTestReceiver {
 
-    private static final Logger log = LoggerFactory.getLogger(SMSTCPTestReceiver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SMSTCPTestReceiver.class);
+
     private static final int NUM_RECEIVERS = 50;
 
     public SMSTCPTestReceiver(String topicName) {
@@ -20,7 +21,7 @@ public class SMSTCPTestReceiver extends AbstractTestReceiver {
     }
 
     public static void main(String[] args) {
-        log.info("NUM_RECEIVERS = {}", NUM_RECEIVERS);
+        LOG.info("NUM_RECEIVERS = {}", NUM_RECEIVERS);
 
         IntStream.range(0, NUM_RECEIVERS).mapToObj(i -> "test.topic." + i).map(SMSTCPTestReceiver::new)
                 .forEach(SMSTCPTestReceiver::start);

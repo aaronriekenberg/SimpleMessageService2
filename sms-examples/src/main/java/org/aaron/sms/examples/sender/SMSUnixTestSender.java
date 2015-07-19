@@ -14,9 +14,12 @@ import java.util.stream.IntStream;
 
 public class SMSUnixTestSender extends AbstractTestSender {
 
-    private static final Logger log = LoggerFactory.getLogger(SMSUnixTestSender.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SMSUnixTestSender.class);
+
     private static final int NUM_SENDERS = 50;
+
     private static final int MESSAGE_SIZE_BYTES = 5_000;
+
     private static final long SLEEP_BETWEEN_SENDS_MS = 1;
 
     public SMSUnixTestSender(String topicName) {
@@ -24,9 +27,9 @@ public class SMSUnixTestSender extends AbstractTestSender {
     }
 
     public static void main(String[] args) {
-        log.info("NUM_SENDERS = {}", NUM_SENDERS);
-        log.info("MESSAGE_SIZE_BYTES = {}", MESSAGE_SIZE_BYTES);
-        log.info("SLEEP_BETWEEN_SENDS_MS = {}", SLEEP_BETWEEN_SENDS_MS);
+        LOG.info("NUM_SENDERS = {}", NUM_SENDERS);
+        LOG.info("MESSAGE_SIZE_BYTES = {}", MESSAGE_SIZE_BYTES);
+        LOG.info("SLEEP_BETWEEN_SENDS_MS = {}", SLEEP_BETWEEN_SENDS_MS);
 
         final List<Thread> threadList = IntStream.range(0, NUM_SENDERS).mapToObj(i -> "test.topic." + i)
                 .map(SMSUnixTestSender::new).map(Thread::new).collect(Collectors.toList());

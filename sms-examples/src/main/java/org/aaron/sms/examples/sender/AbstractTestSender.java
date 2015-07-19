@@ -9,7 +9,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 abstract class AbstractTestSender implements Runnable {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractTestSender.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTestSender.class);
 
     private final String topicName;
 
@@ -29,7 +29,7 @@ abstract class AbstractTestSender implements Runnable {
             final SMSConnection smsConnection = createConnection();
 
             smsConnection
-                    .registerConnectionStateListener(newState -> log.info("connection state changed {}", newState));
+                    .registerConnectionStateListener(newState -> LOG.info("connection state changed {}", newState));
 
             smsConnection.start();
 
@@ -39,7 +39,7 @@ abstract class AbstractTestSender implements Runnable {
                 Thread.sleep(sleepBetweenSendsMS);
             }
         } catch (Exception e) {
-            log.warn("run", e);
+            LOG.warn("run", e);
         }
     }
 

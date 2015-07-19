@@ -13,7 +13,8 @@ import java.util.stream.IntStream;
 
 public class SMSUnixTestReceiver extends AbstractTestReceiver {
 
-    private static final Logger log = LoggerFactory.getLogger(SMSUnixTestReceiver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SMSUnixTestReceiver.class);
+
     private static final int NUM_RECEIVERS = 50;
 
     public SMSUnixTestReceiver(String topicName) {
@@ -21,7 +22,7 @@ public class SMSUnixTestReceiver extends AbstractTestReceiver {
     }
 
     public static void main(String[] args) {
-        log.info("NUM_RECEIVERS = {}", NUM_RECEIVERS);
+        LOG.info("NUM_RECEIVERS = {}", NUM_RECEIVERS);
 
         IntStream.range(0, NUM_RECEIVERS).mapToObj(i -> "test.topic." + i).map(SMSUnixTestReceiver::new)
                 .forEach(SMSUnixTestReceiver::start);

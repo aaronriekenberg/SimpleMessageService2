@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.*;
 
 abstract class AbstractSMSConnection implements SMSConnection {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractSMSConnection.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractSMSConnection.class);
 
     private final DefaultChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
@@ -86,7 +86,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
         final ChannelFuture future = doBootstrapConnection(channelInitializer);
         future.addListener(f -> {
             final boolean success = f.isSuccess();
-            log.debug("connect success {}", success);
+            LOG.debug("connect success {}", success);
             if (!success) {
                 reconnectAsync();
             }
@@ -112,7 +112,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
             return;
         }
 
-        log.debug("resubscribeToTopics {}", subscribedTopicToListener);
+        LOG.debug("resubscribeToTopics {}", subscribedTopicToListener);
         subscribedTopicToListener.keySet()
                 .forEach(topicName -> connectedChannels.write(SMSProtocol.ClientToBrokerMessage.newBuilder()
                         .setMessageType(ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC).setTopicName(topicName)));
@@ -185,7 +185,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
             try {
                 listener.connectionStateChanged(newState);
             } catch (Exception e) {
-                log.warn("fireConnectionStateListenerCallback", e);
+                LOG.warn("fireConnectionStateListenerCallback", e);
             }
         });
     }
@@ -194,7 +194,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
         try {
             listener.handleIncomingMessage(message);
         } catch (Exception e) {
-            log.warn("fireMessageListenerCallback", e);
+            LOG.warn("fireMessageListenerCallback", e);
         }
     }
 
@@ -210,7 +210,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
         @Override
         public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-            log.debug("channelRegistered {}", ctx.channel());
+            LOG.debug("channelRegistered {}", ctx.channel());
 
 			/*
              * Need to synchronize on destroyLock to avoid another thread
@@ -228,7 +228,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
-            log.debug("channelActive {}", ctx.channel());
+            LOG.debug("channelActive {}", ctx.channel());
             connectedChannels.add(ctx.channel());
             resubscribeToTopics();
             fireConnectionStateListenerCallback(SMSConnectionState.CONNECTED_TO_BROKER);
@@ -236,33 +236,33 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            log.debug("channelInactive {}", ctx.channel());
+            LOG.debug("channelInactive {}", ctx.channel());
             fireConnectionStateListenerCallback(SMSConnectionState.NOT_CONNECTED_TO_BROKER);
             reconnectAsync();
         }
 
         @Override
         public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-            log.debug("channelUnregistered {}", ctx.channel());
+            LOG.debug("channelUnregistered {}", ctx.channel());
         }
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-            log.debug("exceptionCaught {}", ctx.channel(), cause);
+            LOG.debug("exceptionCaught {}", ctx.channel(), cause);
             ctx.channel().close();
         }
 
         @Override
         public void channelRead0(ChannelHandlerContext ctx, SMSProtocol.BrokerToClientMessage message) {
             try {
-                log.debug("channelRead0 from {} message = '{}'", ctx.channel(), message);
+                LOG.debug("channelRead0 from {} message = '{}'", ctx.channel(), message);
                 switch (message.getMessageType()) {
                     case BROKER_TOPIC_MESSAGE_PUBLISH:
                         handleBrokerTopicMessagePublish(message);
                         break;
                 }
             } catch (Exception e) {
-                log.warn("channelRead0", e);
+                LOG.warn("channelRead0", e);
                 ctx.channel().close();
             }
         }

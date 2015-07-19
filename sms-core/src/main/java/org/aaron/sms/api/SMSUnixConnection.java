@@ -34,9 +34,9 @@ public class SMSUnixConnection extends AbstractSMSConnection {
     /**
      * Constructor method
      *
-     * @param brokerSocketPath Broker socket path
-     * @param reconnect        delay reconnect delay time
-     * @param reconnect        delay unit reconnect delay time unit
+     * @param brokerAddress      Broker address
+     * @param reconnectDelay     delay reconnect delay time
+     * @param reconnectDelayUnit delay unit reconnect delay time unit
      */
     public SMSUnixConnection(DomainSocketAddress brokerAddress, long reconnectDelay, TimeUnit reconnectDelayUnit) {
         super(reconnectDelay, reconnectDelayUnit);

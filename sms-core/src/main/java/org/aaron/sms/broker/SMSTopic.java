@@ -11,13 +11,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 class SMSTopic {
 
-    private static final Logger log = LoggerFactory.getLogger(SMSTopic.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SMSTopic.class);
 
     private final DefaultChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     public SMSTopic(String topicName) {
         checkNotNull(topicName, "topicName is null");
-        log.info("create SMSTopic '{}'", topicName);
+        LOG.info("create SMSTopic '{}'", topicName);
     }
 
     public void addSubscription(Channel channel) {

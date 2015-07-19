@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 abstract class AbstractTestReceiver {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractTestReceiver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTestReceiver.class);
 
     private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
@@ -30,21 +30,21 @@ abstract class AbstractTestReceiver {
             final SMSConnection smsConnection = createConnection();
 
             executor.scheduleAtFixedRate(
-                    () -> log.info(topicName + " messages received last second = " + messagesReceived.getAndSet(0)), 1,
+                    () -> LOG.info(topicName + " messages received last second = " + messagesReceived.getAndSet(0)), 1,
                     1, TimeUnit.SECONDS);
 
             smsConnection
-                    .registerConnectionStateListener(newState -> log.info("connection state changed {}", newState));
+                    .registerConnectionStateListener(newState -> LOG.info("connection state changed {}", newState));
 
             smsConnection.subscribeToTopic(topicName, message -> {
-                log.debug("handleIncomingMessage topic {} length {}", topicName, message.size());
+                LOG.debug("handleIncomingMessage topic {} length {}", topicName, message.size());
                 messagesReceived.getAndIncrement();
             });
 
             smsConnection.start();
 
         } catch (Exception e) {
-            log.warn("start", e);
+            LOG.warn("start", e);
         }
     }
 
