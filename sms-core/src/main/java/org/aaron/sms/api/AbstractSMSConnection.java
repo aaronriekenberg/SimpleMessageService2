@@ -28,11 +28,16 @@ abstract class AbstractSMSConnection implements SMSConnection {
     private final DefaultChannelGroup connectedChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     private final ConcurrentHashMap<String, SMSMessageListener> subscribedTopicToListener = new ConcurrentHashMap<>();
+
     private final AtomicReference<ConnectionState> connectionState = new AtomicReference<>(ConnectionState.NOT_STARTED);
+
     private final Set<SMSConnectionStateListener> connectionStateListeners = Collections
             .newSetFromMap(new ConcurrentHashMap<>());
+
     private final FunctionalReentrantReadWriteLock destroyLock = new FunctionalReentrantReadWriteLock();
+
     private final long reconnectDelay;
+
     private final TimeUnit reconnectDelayUnit;
 
     public AbstractSMSConnection(long reconnectDelay, TimeUnit reconnectDelayUnit) {
@@ -99,7 +104,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
             return;
         }
 
-        getEventLoopGroup().schedule(() -> bootstrapConnection(), delay, delayUnit);
+        getEventLoopGroup().schedule(this::bootstrapConnection, delay, delayUnit);
     }
 
     private void resubscribeToTopics() {
