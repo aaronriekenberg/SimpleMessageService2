@@ -10,8 +10,4 @@ interface SMSBrokerServer {
 
     boolean isDestroyed();
 
-    void awaitDestroyed() throws InterruptedException;
-
-    void awaitDestroyedUninterruptible();
-
 }

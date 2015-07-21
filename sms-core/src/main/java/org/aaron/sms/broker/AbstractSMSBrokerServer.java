@@ -1,6 +1,5 @@
 package org.aaron.sms.broker;
 
-import com.google.common.util.concurrent.Uninterruptibles;
 import io.netty.channel.*;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
@@ -11,7 +10,6 @@ import org.aaron.sms.util.FunctionalReentrantReadWriteLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -23,8 +21,6 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
     private final DefaultChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     private final AtomicBoolean destroyed = new AtomicBoolean(false);
-
-    private final CountDownLatch destroyedLatch = new CountDownLatch(1);
 
     private final FunctionalReentrantReadWriteLock destroyLock = new FunctionalReentrantReadWriteLock();
 
@@ -66,11 +62,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
         destroyLock.doInWriteLock(() -> {
             if (destroyed.compareAndSet(false, true)) {
-
                 allChannels.close();
-
-                destroyedLatch.countDown();
-
             }
         });
     }
@@ -78,18 +70,6 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
     @Override
     public boolean isDestroyed() {
         return destroyed.get();
-    }
-
-    @Override
-    public void awaitDestroyed() throws InterruptedException {
-        destroyedLatch.await();
-    }
-
-    @Override
-    public void awaitDestroyedUninterruptible() {
-        while (!isDestroyed()) {
-            Uninterruptibles.awaitUninterruptibly(destroyedLatch);
-        }
     }
 
     private void processIncomingMessage(Channel channel, SMSProtocol.ClientToBrokerMessage message) {
