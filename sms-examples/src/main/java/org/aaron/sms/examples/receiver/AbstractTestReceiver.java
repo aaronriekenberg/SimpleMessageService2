@@ -15,7 +15,7 @@ abstract class AbstractTestReceiver {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTestReceiver.class);
 
-    private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(1);
 
     private final AtomicInteger messagesReceived = new AtomicInteger(0);
 
@@ -29,7 +29,7 @@ abstract class AbstractTestReceiver {
         try {
             final SMSConnection smsConnection = createConnection();
 
-            executor.scheduleAtFixedRate(
+            EXECUTOR.scheduleAtFixedRate(
                     () -> LOG.info(topicName + " messages received last second = " + messagesReceived.getAndSet(0)), 1,
                     1, TimeUnit.SECONDS);
 
