@@ -2,16 +2,16 @@ package org.aaron.sms.broker;
 
 interface SMSBrokerServer {
 
-    public boolean isAvailable();
+    boolean isAvailable();
 
-    public void start();
+    void start();
 
-    public void destroy();
+    void destroy();
 
-    public boolean isDestroyed();
+    boolean isDestroyed();
 
-    public void awaitDestroyed() throws InterruptedException;
+    void awaitDestroyed() throws InterruptedException;
 
-    public void awaitDestroyedUninterruptible();
+    void awaitDestroyedUninterruptible();
 
 }

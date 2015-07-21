@@ -25,14 +25,14 @@ public interface SMSConnection {
      *
      * @param listener
      */
-    public void registerConnectionStateListener(SMSConnectionStateListener listener);
+    void registerConnectionStateListener(SMSConnectionStateListener listener);
 
     /**
      * Unregister a listener for connection state changes.
      *
      * @param listener
      */
-    public void unregisterConnectionStateListener(SMSConnectionStateListener listener);
+    void unregisterConnectionStateListener(SMSConnectionStateListener listener);
 
     /**
      * Subscribe to a topic to begin receiving messages from it.
@@ -40,27 +40,27 @@ public interface SMSConnection {
      * @param topicName       topic name
      * @param messageListener message listener
      */
-    public void subscribeToTopic(String topicName, SMSMessageListener messageListener);
+    void subscribeToTopic(String topicName, SMSMessageListener messageListener);
 
     /**
      * Unsubscribe from a topic to stop receiving messages from it
      *
      * @param topicName topic name
      */
-    public void unsubscribeFromTopic(String topicName);
+    void unsubscribeFromTopic(String topicName);
 
     /**
      * Start the SMSConnection. Initiates a connection attempt to the SMS
      * Broker.
      */
-    public void start();
+    void start();
 
     /**
      * Is the SMSConnection started?
      *
      * @return true if started, false otherwise
      */
-    public boolean isStarted();
+    boolean isStarted();
 
     /**
      * Write a message to a topic asynchronously.
@@ -71,7 +71,7 @@ public interface SMSConnection {
      * @param topicName topic name
      * @param message   message payload
      */
-    public void writeToTopic(String topicName, ByteString message);
+    void writeToTopic(String topicName, ByteString message);
 
     /**
      * Destroy this SMSConnection. Close the connection to the SMS Broker and
@@ -82,6 +82,6 @@ public interface SMSConnection {
      * It is the user's responsibility to call destroy on all SMSConnections
      * created.
      */
-    public void destroy();
+    void destroy();
 
 }

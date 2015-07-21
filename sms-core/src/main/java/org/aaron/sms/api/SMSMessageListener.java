@@ -13,6 +13,6 @@ public interface SMSMessageListener {
      *
      * @param message message payload
      */
-    public void handleIncomingMessage(ByteString message);
+    void handleIncomingMessage(ByteString message);
 
 }

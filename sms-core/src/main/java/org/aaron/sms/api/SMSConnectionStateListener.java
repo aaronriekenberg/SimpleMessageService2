@@ -12,6 +12,6 @@ public interface SMSConnectionStateListener {
      *
      * @param newState new connection state
      */
-    public void connectionStateChanged(SMSConnectionState newState);
+    void connectionStateChanged(SMSConnectionState newState);
 
 }

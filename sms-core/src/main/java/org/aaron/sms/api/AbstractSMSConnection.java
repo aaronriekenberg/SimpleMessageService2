@@ -171,7 +171,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
     private void handleBrokerTopicMessagePublish(SMSProtocol.BrokerToClientMessage message) {
         checkNotNull(message, "message is null");
         checkNotNull(message.getTopicName(), "topic name is null");
-        checkArgument(message.getTopicName().length() > 0, "topic name is emtpy");
+        checkArgument(message.getTopicName().length() > 0, "topic name is empty");
         checkNotNull(message.getMessagePayload(), "message payload is null");
 
         final SMSMessageListener listener = subscribedTopicToListener.get(message.getTopicName());
