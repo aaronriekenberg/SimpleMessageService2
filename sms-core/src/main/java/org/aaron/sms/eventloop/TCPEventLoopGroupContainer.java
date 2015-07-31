@@ -23,6 +23,7 @@ public class TCPEventLoopGroupContainer {
 
     static {
         if (Epoll.isAvailable()) {
+            LOG.info("using epoll for TCP event loop group");
             EVENT_LOOP_GROUP = EpollEventLoopGroupContainer.EVENT_LOOP_GROUP;
             CLIENT_CHANNEL_CLASS = EpollSocketChannel.class;
             SERVER_CHANNEL_CLASS = EpollServerSocketChannel.class;
