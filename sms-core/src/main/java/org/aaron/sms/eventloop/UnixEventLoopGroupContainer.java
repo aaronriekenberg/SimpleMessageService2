@@ -6,8 +6,12 @@ import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDomainSocketChannel;
 import io.netty.channel.epoll.EpollServerDomainSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UnixEventLoopGroupContainer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UnixEventLoopGroupContainer.class);
 
     private static final EventLoopGroup EVENT_LOOP_GROUP;
 
@@ -21,6 +25,7 @@ public class UnixEventLoopGroupContainer {
             CLIENT_CHANNEL_CLASS = EpollDomainSocketChannel.class;
             SERVER_CHANNEL_CLASS = EpollServerDomainSocketChannel.class;
         } else {
+            LOG.warn("epoll is not available, unix sockets are not usable");
             EVENT_LOOP_GROUP = null;
             CLIENT_CHANNEL_CLASS = null;
             SERVER_CHANNEL_CLASS = null;

@@ -19,7 +19,7 @@ public class SMSTCPTestSender extends AbstractTestSender {
 
     private static final int MESSAGE_SIZE_BYTES = 5_000;
 
-    private static final long SLEEP_BETWEEN_SENDS_MS = 1;
+    private static final long SLEEP_BETWEEN_SENDS_MS = 10;
 
     public SMSTCPTestSender(String topicName) {
         super(topicName, MESSAGE_SIZE_BYTES, SLEEP_BETWEEN_SENDS_MS);

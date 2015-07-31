@@ -8,8 +8,12 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TCPEventLoopGroupContainer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TCPEventLoopGroupContainer.class);
 
     private static final EventLoopGroup EVENT_LOOP_GROUP;
 
@@ -23,6 +27,7 @@ public class TCPEventLoopGroupContainer {
             CLIENT_CHANNEL_CLASS = EpollSocketChannel.class;
             SERVER_CHANNEL_CLASS = EpollServerSocketChannel.class;
         } else {
+            LOG.info("epoll not available for TCP event loop group, falling back to NIO");
             EVENT_LOOP_GROUP = NioEventLoopGroupContainer.EVENT_LOOP_GROUP;
             CLIENT_CHANNEL_CLASS = NioSocketChannel.class;
             SERVER_CHANNEL_CLASS = NioServerSocketChannel.class;
