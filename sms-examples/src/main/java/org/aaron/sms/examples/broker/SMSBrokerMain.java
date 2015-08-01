@@ -11,8 +11,10 @@ import java.util.concurrent.TimeUnit;
 public class SMSBrokerMain {
 
     public static void main(String[] args) {
-        new SMSBroker().addTCPServer(new InetSocketAddress(10001))
-                .addUnixServer(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile())).start();
+        SMSBroker.newBuilder()
+                .addTCPServer(new InetSocketAddress(10001))
+                .addUnixServer(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()))
+                .build().start();
 
         while (true) {
             Uninterruptibles.sleepUninterruptibly(1, TimeUnit.MINUTES);

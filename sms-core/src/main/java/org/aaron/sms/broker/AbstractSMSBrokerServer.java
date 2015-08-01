@@ -61,9 +61,8 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
         LOG.info("destroy");
 
         destroyLock.doInWriteLock(() -> {
-            if (destroyed.compareAndSet(false, true)) {
-                allChannels.close();
-            }
+            destroyed.set(true);
+            allChannels.close();
         });
     }
 
