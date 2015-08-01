@@ -30,7 +30,7 @@ abstract class AbstractTestReceiver {
             final SMSConnection smsConnection = createConnection();
 
             EXECUTOR.scheduleAtFixedRate(
-                    () -> LOG.info(topicName + " messages received last second = " + messagesReceived.getAndSet(0)), 1,
+                    () -> LOG.info("{} messages received last second = {}", topicName, messagesReceived.getAndSet(0)), 1,
                     1, TimeUnit.SECONDS);
 
             smsConnection
