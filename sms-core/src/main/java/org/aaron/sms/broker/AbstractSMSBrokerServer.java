@@ -7,12 +7,12 @@ import org.aaron.sms.protocol.SMSProtocolChannelInitializer;
 import org.aaron.sms.protocol.protobuf.SMSProtocol;
 import org.aaron.sms.protocol.protobuf.SMSProtocol.BrokerToClientMessage.BrokerToClientMessageType;
 import org.aaron.sms.util.FunctionalReentrantReadWriteLock;
+import org.aaron.sms.util.RunState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
@@ -20,7 +20,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
     private final DefaultChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-    private final AtomicBoolean destroyed = new AtomicBoolean(false);
+    private final RunState runState = new RunState();
 
     private final FunctionalReentrantReadWriteLock destroyLock = new FunctionalReentrantReadWriteLock();
 
@@ -44,6 +44,8 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
         if (!isAvailable()) {
             LOG.warn("{} is not available, not staring server", getClass().getSimpleName());
         } else {
+            checkState(runState.start(), "Invalid state for start");
+
             final ChannelInitializer<Channel> childHandler = new SMSProtocolChannelInitializer(ServerHandler::new,
                     SMSProtocol.ClientToBrokerMessage.getDefaultInstance());
 
@@ -61,14 +63,15 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
         LOG.info("destroy");
 
         destroyLock.doInWriteLock(() -> {
-            destroyed.set(true);
-            allChannels.close();
+            if (runState.destroy()) {
+                allChannels.close();
+            }
         });
     }
 
     @Override
     public boolean isDestroyed() {
-        return destroyed.get();
+        return (runState.getState() == RunState.State.DESTROYED);
     }
 
     private void processIncomingMessage(Channel channel, SMSProtocol.ClientToBrokerMessage message) {
@@ -105,7 +108,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 			 * below.
 			 */
             destroyLock.doInReadLock(() -> {
-                if (destroyed.get()) {
+                if (runState.getState() == RunState.State.DESTROYED) {
                     ctx.channel().close();
                 } else {
                     allChannels.add(ctx.channel());

@@ -8,6 +8,7 @@ import org.aaron.sms.protocol.SMSProtocolChannelInitializer;
 import org.aaron.sms.protocol.protobuf.SMSProtocol;
 import org.aaron.sms.protocol.protobuf.SMSProtocol.ClientToBrokerMessage.ClientToBrokerMessageType;
 import org.aaron.sms.util.FunctionalReentrantReadWriteLock;
+import org.aaron.sms.util.RunState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
     private final ConcurrentHashMap<String, SMSMessageListener> subscribedTopicToListener = new ConcurrentHashMap<>();
 
-    private final AtomicReference<ConnectionState> connectionState = new AtomicReference<>(ConnectionState.NOT_STARTED);
+    private final RunState runState = new RunState();
 
     private final Set<SMSConnectionStateListener> connectionStateListeners = Collections
             .newSetFromMap(new ConcurrentHashMap<>());
@@ -63,15 +64,14 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
     @Override
     public void start() {
-        checkState(connectionState.compareAndSet(ConnectionState.NOT_STARTED, ConnectionState.RUNNING),
-                "Invalid state for start");
+        checkState(runState.start(), "Invalid state for start");
 
         reconnectAsync(0, TimeUnit.SECONDS);
     }
 
     @Override
     public boolean isStarted() {
-        return (connectionState.get() == ConnectionState.RUNNING);
+        return (runState.getState() == RunState.State.RUNNING);
     }
 
     protected abstract ChannelFuture doBootstrapConnection(ChannelInitializer<Channel> channelInitializer);
@@ -156,7 +156,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
     @Override
     public void destroy() {
         destroyLock.doInWriteLock(() -> {
-            if (connectionState.compareAndSet(ConnectionState.RUNNING, ConnectionState.DESTROYED)) {
+            if (runState.destroy()) {
 
                 connectionStateListeners.clear();
 
@@ -198,14 +198,6 @@ abstract class AbstractSMSConnection implements SMSConnection {
         }
     }
 
-    private enum ConnectionState {
-        NOT_STARTED,
-
-        RUNNING,
-
-        DESTROYED
-    }
-
     private class ClientHandler extends SimpleChannelInboundHandler<SMSProtocol.BrokerToClientMessage> {
 
         @Override
@@ -218,7 +210,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
 			 * allChannels.add() below.
 			 */
             destroyLock.doInReadLock(() -> {
-                if (connectionState.get() == ConnectionState.DESTROYED) {
+                if (runState.getState() == RunState.State.DESTROYED) {
                     ctx.channel().close();
                 } else {
                     allChannels.add(ctx.channel());
