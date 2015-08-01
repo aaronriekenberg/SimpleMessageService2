@@ -15,7 +15,7 @@ abstract class AbstractTestReceiver {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTestReceiver.class);
 
-    private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
     private final AtomicInteger messagesReceived = new AtomicInteger(0);
 
