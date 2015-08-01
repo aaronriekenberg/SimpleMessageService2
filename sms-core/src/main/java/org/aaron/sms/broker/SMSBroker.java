@@ -31,24 +31,43 @@ public class SMSBroker {
 
     public static class Builder {
 
-        private final SMSTopicContainer topicContainer = new SMSTopicContainer();
-
         private final ArrayList<SMSBrokerServer> servers = new ArrayList<>();
 
+        private SMSTopicContainer topicContainer = null;
+
+        public Builder() {
+            reset();
+        }
+
         public Builder addTCPServer(InetSocketAddress bindAddress) {
-            servers.add(new SMSBrokerTCPServer(topicContainer, bindAddress));
+            servers.add(new SMSBrokerTCPServer(getTopicContainer(), bindAddress));
             return this;
         }
 
         public Builder addUnixServer(DomainSocketAddress bindAddress) {
-            servers.add(new SMSBrokerUnixServer(topicContainer, bindAddress));
+            servers.add(new SMSBrokerUnixServer(getTopicContainer(), bindAddress));
             return this;
         }
 
         public SMSBroker build() {
-            return new SMSBroker(servers);
+            final SMSBroker broker = new SMSBroker(servers);
+            reset();
+            return broker;
         }
 
+        public Builder reset() {
+            servers.clear();
+            topicContainer = null;
+            return this;
+        }
+
+        private SMSTopicContainer getTopicContainer() {
+            if (topicContainer == null) {
+                topicContainer = new SMSTopicContainer();
+            }
+            return topicContainer;
+        }
+        
     }
 
 }
