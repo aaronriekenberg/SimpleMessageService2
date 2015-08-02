@@ -21,12 +21,12 @@ public class UnixEventLoopGroupContainer {
 
     static {
         if (Epoll.isAvailable()) {
-            LOG.info("using epoll for unix event loop group");
+            LOG.debug("using epoll for unix event loop group");
             EVENT_LOOP_GROUP = EpollEventLoopGroupContainer.EVENT_LOOP_GROUP;
             CLIENT_CHANNEL_CLASS = EpollDomainSocketChannel.class;
             SERVER_CHANNEL_CLASS = EpollServerDomainSocketChannel.class;
         } else {
-            LOG.warn("epoll is not available, unix event loop group is usable");
+            LOG.debug("epoll not available, unix event loop group is not usable");
             EVENT_LOOP_GROUP = null;
             CLIENT_CHANNEL_CLASS = null;
             SERVER_CHANNEL_CLASS = null;

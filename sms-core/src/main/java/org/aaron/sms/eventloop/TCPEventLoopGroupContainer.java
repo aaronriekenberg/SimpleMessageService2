@@ -23,12 +23,12 @@ public class TCPEventLoopGroupContainer {
 
     static {
         if (Epoll.isAvailable()) {
-            LOG.info("using epoll for TCP event loop group");
+            LOG.debug("using epoll for TCP event loop group");
             EVENT_LOOP_GROUP = EpollEventLoopGroupContainer.EVENT_LOOP_GROUP;
             CLIENT_CHANNEL_CLASS = EpollSocketChannel.class;
             SERVER_CHANNEL_CLASS = EpollServerSocketChannel.class;
         } else {
-            LOG.info("epoll not available for TCP event loop group, falling back to NIO");
+            LOG.debug("epoll not available for TCP event loop group, falling back to NIO");
             EVENT_LOOP_GROUP = NioEventLoopGroupContainer.EVENT_LOOP_GROUP;
             CLIENT_CHANNEL_CLASS = NioSocketChannel.class;
             SERVER_CHANNEL_CLASS = NioServerSocketChannel.class;

@@ -42,7 +42,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
     @Override
     public void start() {
         if (!isAvailable()) {
-            LOG.warn("{} is not available, not staring server", getClass().getSimpleName());
+            LOG.warn("{} not available, not staring server", getClass().getSimpleName());
         } else {
             checkState(runState.start(), "Invalid state for start");
 
@@ -54,7 +54,7 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
             final Channel serverChannel = channelFuture.syncUninterruptibly().channel();
             allChannels.add(serverChannel);
 
-            LOG.info("listening on {} ({})", serverChannel.localAddress(), getEventLoopGroup());
+            LOG.info("{} listening on {} ({})", getClass().getSimpleName(), serverChannel.localAddress(), getEventLoopGroup());
         }
     }
 
