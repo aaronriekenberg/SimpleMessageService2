@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class SMSBroker {
 
     private final List<SMSBrokerServer> servers;
@@ -36,11 +38,13 @@ public class SMSBroker {
         private final ArrayList<Function<SMSTopicContainer, SMSBrokerServer>> createServerFunctions = new ArrayList<>();
 
         public Builder addTCPServer(InetSocketAddress bindAddress) {
+            checkNotNull(bindAddress, "bindAddress is null");
             createServerFunctions.add((topicContainer) -> new SMSBrokerTCPServer(topicContainer, bindAddress));
             return this;
         }
 
         public Builder addUnixServer(DomainSocketAddress bindAddress) {
+            checkNotNull(bindAddress, "bindAddress is null");
             createServerFunctions.add((topicContainer) -> new SMSBrokerUnixServer(topicContainer, bindAddress));
             return this;
         }
@@ -49,10 +53,7 @@ public class SMSBroker {
             final SMSTopicContainer topicContainer = new SMSTopicContainer();
             final List<SMSBrokerServer> servers = createServerFunctions.stream().map(f ->
                     f.apply(topicContainer)).collect(Collectors.toList());
-
-            final SMSBroker broker = new SMSBroker(servers);
-            createServerFunctions.clear();
-            return broker;
+            return new SMSBroker(servers);
         }
 
     }
