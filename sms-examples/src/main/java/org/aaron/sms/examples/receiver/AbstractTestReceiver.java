@@ -26,26 +26,21 @@ abstract class AbstractTestReceiver {
     }
 
     public void start() {
-        try {
-            final SMSConnection smsConnection = createConnection();
+        final SMSConnection smsConnection = createConnection();
 
-            EXECUTOR.scheduleAtFixedRate(
-                    () -> LOG.info("{} messages received last second = {}", topicName, messagesReceived.getAndSet(0)), 1,
-                    1, TimeUnit.SECONDS);
+        smsConnection
+                .registerConnectionStateListener(newState -> LOG.info("connection state changed {}", newState));
 
-            smsConnection
-                    .registerConnectionStateListener(newState -> LOG.info("connection state changed {}", newState));
+        smsConnection.subscribeToTopic(topicName, message -> {
+            LOG.debug("handleIncomingMessage topic {} length {}", topicName, message.size());
+            messagesReceived.getAndIncrement();
+        });
 
-            smsConnection.subscribeToTopic(topicName, message -> {
-                LOG.debug("handleIncomingMessage topic {} length {}", topicName, message.size());
-                messagesReceived.getAndIncrement();
-            });
+        smsConnection.start();
 
-            smsConnection.start();
-
-        } catch (Exception e) {
-            LOG.warn("start", e);
-        }
+        EXECUTOR.scheduleAtFixedRate(
+                () -> LOG.info("{} messages received last second = {}", topicName, messagesReceived.getAndSet(0)), 1,
+                1, TimeUnit.SECONDS);
     }
 
     protected abstract SMSConnection createConnection();

@@ -45,6 +45,11 @@ public class SMSUnixConnection extends AbstractSMSConnection {
     }
 
     @Override
+    public boolean isAvailable() {
+        return UnixEventLoopGroupContainer.isAvailable();
+    }
+
+    @Override
     protected ChannelFuture doBootstrapConnection(ChannelInitializer<Channel> channelInitializer) {
         return new Bootstrap().group(getEventLoopGroup()).channel(UnixEventLoopGroupContainer.getClientChannelClass())
                 .handler(channelInitializer).connect(brokerAddress);

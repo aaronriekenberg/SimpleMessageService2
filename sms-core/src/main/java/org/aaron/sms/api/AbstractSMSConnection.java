@@ -48,6 +48,11 @@ abstract class AbstractSMSConnection implements SMSConnection {
     }
 
     @Override
+    public boolean isAvailable() {
+        return true;
+    }
+
+    @Override
     public void registerConnectionStateListener(SMSConnectionStateListener listener) {
         checkNotNull(listener, "listener is null");
 
@@ -63,9 +68,13 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
     @Override
     public void start() {
-        checkState(runState.start(), "Invalid state for start");
+        if (!isAvailable()) {
+            throw new IllegalStateException(getClass().getSimpleName() + " is not available");
+        } else {
+            checkState(runState.start(), "Invalid state for start");
 
-        reconnectAsync(0, TimeUnit.SECONDS);
+            reconnectAsync(0, TimeUnit.SECONDS);
+        }
     }
 
     @Override

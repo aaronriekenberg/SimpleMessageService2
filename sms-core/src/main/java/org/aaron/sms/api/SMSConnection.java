@@ -21,6 +21,13 @@ import com.google.protobuf.ByteString;
 public interface SMSConnection {
 
     /**
+     * Determine if this connection type is available for use
+     *
+     * @return true if available, false otherwise
+     */
+    boolean isAvailable();
+
+    /**
      * Register a listener for connection state changes.
      *
      * @param listener

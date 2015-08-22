@@ -1,9 +1,12 @@
 package org.aaron.sms.examples.sender;
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.protobuf.ByteString;
 import org.aaron.sms.api.SMSConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -25,21 +28,17 @@ abstract class AbstractTestSender implements Runnable {
 
     @Override
     public void run() {
-        try {
-            final SMSConnection smsConnection = createConnection();
+        final SMSConnection smsConnection = createConnection();
 
-            smsConnection
-                    .registerConnectionStateListener(newState -> LOG.info("connection state changed {}", newState));
+        smsConnection
+                .registerConnectionStateListener(newState -> LOG.info("connection state changed {}", newState));
 
-            smsConnection.start();
+        smsConnection.start();
 
-            final ByteString buffer = ByteString.copyFrom(new byte[messageSizeBytes]);
-            while (true) {
-                smsConnection.writeToTopic(topicName, buffer);
-                Thread.sleep(sleepBetweenSendsMS);
-            }
-        } catch (Exception e) {
-            LOG.warn("run", e);
+        final ByteString buffer = ByteString.copyFrom(new byte[messageSizeBytes]);
+        while (true) {
+            smsConnection.writeToTopic(topicName, buffer);
+            Uninterruptibles.sleepUninterruptibly(sleepBetweenSendsMS, TimeUnit.MILLISECONDS);
         }
     }
 
