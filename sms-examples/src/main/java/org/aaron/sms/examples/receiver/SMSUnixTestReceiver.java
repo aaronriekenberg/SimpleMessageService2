@@ -34,7 +34,9 @@ public class SMSUnixTestReceiver extends AbstractTestReceiver {
 
     @Override
     protected SMSConnection createConnection() {
-        return new SMSUnixConnection(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()));
+        return SMSUnixConnection.newBuilder()
+                .setBrokerAddress(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()))
+                .build();
     }
 
 }

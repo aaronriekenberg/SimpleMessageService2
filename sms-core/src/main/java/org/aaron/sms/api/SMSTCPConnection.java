@@ -7,6 +7,7 @@ import org.aaron.sms.eventloop.TCPEventLoopGroupContainer;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -17,42 +18,87 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class SMSTCPConnection extends AbstractSMSConnection {
 
-    private static final Integer CONNECT_TIMEOUT_MS = 5_000;
-
     private final InetSocketAddress brokerAddress;
 
-    /**
-     * Constructor method
-     *
-     * @param brokerAddress Broker address
-     */
-    public SMSTCPConnection(InetSocketAddress brokerAddress) {
-        this(brokerAddress, 1, TimeUnit.SECONDS);
-    }
+    private final long connectTimeout;
 
-    /**
-     * Constructor method
-     *
-     * @param brokerAddress      Broker address
-     * @param reconnectDelay     delay reconnect delay time
-     * @param reconnectDelayUnit delay unit reconnect delay time unit
-     */
-    public SMSTCPConnection(InetSocketAddress brokerAddress, long reconnectDelay, TimeUnit reconnectDelayUnit) {
-        super(reconnectDelay, reconnectDelayUnit);
+    private final TimeUnit connectTimeoutTimeUnit;
+
+    private SMSTCPConnection(
+            InetSocketAddress brokerAddress,
+            long reconnectDelay, TimeUnit reconnectDelayTimeUnit,
+            long connectTimeout, TimeUnit connectTimeoutTimeUnit) {
+        super(reconnectDelay, reconnectDelayTimeUnit);
 
         this.brokerAddress = checkNotNull(brokerAddress, "brokerAddress is null");
+        checkArgument(connectTimeout > 0, "connectTimeout must be positive");
+        this.connectTimeout = connectTimeout;
+        this.connectTimeoutTimeUnit = checkNotNull(connectTimeoutTimeUnit, "connectTimeoutTimeUnit is null");
     }
 
     @Override
     protected ChannelFuture doBootstrapConnection(ChannelInitializer<Channel> channelInitializer) {
-        return new Bootstrap().group(getEventLoopGroup()).channel(TCPEventLoopGroupContainer.getClientChannelClass())
-                .handler(channelInitializer).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT_MS)
+        return new Bootstrap()
+                .group(getEventLoopGroup())
+                .channel(TCPEventLoopGroupContainer.getClientChannelClass())
+                .handler(channelInitializer)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,
+                        (int) connectTimeoutTimeUnit.toMillis(connectTimeout))
                 .connect(brokerAddress);
     }
 
     @Override
     protected EventLoopGroup getEventLoopGroup() {
         return TCPEventLoopGroupContainer.getEventLoopGroup();
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private long reconnectDelay = 1;
+
+        private TimeUnit reconnectDelayTimeUnit = TimeUnit.SECONDS;
+
+        private long connectTimeout = 5;
+
+        private TimeUnit connectTimeoutTimeUnit = TimeUnit.SECONDS;
+
+        private InetSocketAddress brokerAddress = null;
+
+        public Builder setReconnectDelay(long reconnectDelay) {
+            this.reconnectDelay = reconnectDelay;
+            return this;
+        }
+
+        public Builder setReconnectDelayTimeUnit(TimeUnit reconnectDelayTimeUnit) {
+            this.reconnectDelayTimeUnit = reconnectDelayTimeUnit;
+            return this;
+        }
+
+        public Builder setConnectTimeout(long connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        public Builder setConnectTimeoutTimeUnit(TimeUnit connectTimeoutTimeUnit) {
+            this.connectTimeoutTimeUnit = connectTimeoutTimeUnit;
+            return this;
+        }
+
+        public Builder setBrokerAddress(InetSocketAddress brokerAddress) {
+            this.brokerAddress = brokerAddress;
+            return this;
+        }
+
+        public SMSTCPConnection build() {
+            return new SMSTCPConnection(
+                    brokerAddress,
+                    reconnectDelay, reconnectDelayTimeUnit,
+                    connectTimeout, connectTimeoutTimeUnit);
+        }
     }
 
 }

@@ -38,13 +38,13 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
     private final long reconnectDelay;
 
-    private final TimeUnit reconnectDelayUnit;
+    private final TimeUnit reconnectDelayTimeUnit;
 
-    public AbstractSMSConnection(long reconnectDelay, TimeUnit reconnectDelayUnit) {
+    public AbstractSMSConnection(long reconnectDelay, TimeUnit reconnectDelayTimeUnit) {
         checkArgument(reconnectDelay > 0, "reconnectDelay must be positive");
         this.reconnectDelay = reconnectDelay;
 
-        this.reconnectDelayUnit = checkNotNull(reconnectDelayUnit, "reconnectDelayUnit is null");
+        this.reconnectDelayTimeUnit = checkNotNull(reconnectDelayTimeUnit, "reconnectDelayTimeUnit is null");
     }
 
     @Override
@@ -104,15 +104,15 @@ abstract class AbstractSMSConnection implements SMSConnection {
     protected abstract EventLoopGroup getEventLoopGroup();
 
     private void reconnectAsync() {
-        reconnectAsync(reconnectDelay, reconnectDelayUnit);
+        reconnectAsync(reconnectDelay, reconnectDelayTimeUnit);
     }
 
-    private void reconnectAsync(long delay, TimeUnit delayUnit) {
+    private void reconnectAsync(long delay, TimeUnit delayTimeUnit) {
         if (!isStarted()) {
             return;
         }
 
-        getEventLoopGroup().schedule(this::bootstrapConnection, delay, delayUnit);
+        getEventLoopGroup().schedule(this::bootstrapConnection, delay, delayTimeUnit);
     }
 
     private void resubscribeToTopics() {

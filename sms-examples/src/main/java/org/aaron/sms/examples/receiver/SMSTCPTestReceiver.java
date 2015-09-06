@@ -33,7 +33,9 @@ public class SMSTCPTestReceiver extends AbstractTestReceiver {
 
     @Override
     protected SMSConnection createConnection() {
-        return new SMSTCPConnection(new InetSocketAddress("127.0.0.1", 10001));
+        return SMSTCPConnection.newBuilder()
+                .setBrokerAddress(new InetSocketAddress("127.0.0.1", 10001))
+                .build();
     }
 
 }
