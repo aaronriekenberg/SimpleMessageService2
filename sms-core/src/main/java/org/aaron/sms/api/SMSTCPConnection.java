@@ -5,10 +5,10 @@ import io.netty.channel.*;
 import org.aaron.sms.eventloop.TCPEventLoopGroupContainer;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.aaron.sms.util.DurationUtils.checkNotNullAndPositive;
 
 /**
  * TCP version of SMSConnection.
@@ -20,20 +20,14 @@ public class SMSTCPConnection extends AbstractSMSConnection {
 
     private final InetSocketAddress brokerAddress;
 
-    private final long connectTimeout;
-
-    private final TimeUnit connectTimeoutTimeUnit;
+    private final Duration connectTimeout;
 
     private SMSTCPConnection(
-            InetSocketAddress brokerAddress,
-            long reconnectDelay, TimeUnit reconnectDelayTimeUnit,
-            long connectTimeout, TimeUnit connectTimeoutTimeUnit) {
-        super(reconnectDelay, reconnectDelayTimeUnit);
+            InetSocketAddress brokerAddress, Duration reconnectDelay, Duration connectTimeout) {
+        super(reconnectDelay);
 
         this.brokerAddress = checkNotNull(brokerAddress, "brokerAddress is null");
-        checkArgument(connectTimeout > 0, "connectTimeout must be positive");
-        this.connectTimeout = connectTimeout;
-        this.connectTimeoutTimeUnit = checkNotNull(connectTimeoutTimeUnit, "connectTimeoutTimeUnit is null");
+        this.connectTimeout = checkNotNullAndPositive(connectTimeout, "connectTimeout");
     }
 
     @Override
@@ -43,7 +37,7 @@ public class SMSTCPConnection extends AbstractSMSConnection {
                 .channel(TCPEventLoopGroupContainer.getClientChannelClass())
                 .handler(channelInitializer)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,
-                        (int) connectTimeoutTimeUnit.toMillis(connectTimeout))
+                        (int) connectTimeout.toMillis())
                 .connect(brokerAddress);
     }
 
@@ -58,46 +52,30 @@ public class SMSTCPConnection extends AbstractSMSConnection {
 
     public static class Builder {
 
-        private long reconnectDelay = 1;
+        private Duration reconnectDelay = Duration.ofSeconds(1);
 
-        private TimeUnit reconnectDelayTimeUnit = TimeUnit.SECONDS;
-
-        private long connectTimeout = 5;
-
-        private TimeUnit connectTimeoutTimeUnit = TimeUnit.SECONDS;
+        private Duration connectTimeout = Duration.ofSeconds(5);
 
         private InetSocketAddress brokerAddress = null;
 
-        public Builder setReconnectDelay(long reconnectDelay) {
-            this.reconnectDelay = reconnectDelay;
+        public Builder setReconnectDelay(Duration reconnectDelay) {
+            this.reconnectDelay = checkNotNullAndPositive(reconnectDelay, "reconnectDelay");
             return this;
         }
 
-        public Builder setReconnectDelayTimeUnit(TimeUnit reconnectDelayTimeUnit) {
-            this.reconnectDelayTimeUnit = reconnectDelayTimeUnit;
-            return this;
-        }
-
-        public Builder setConnectTimeout(long connectTimeout) {
-            this.connectTimeout = connectTimeout;
-            return this;
-        }
-
-        public Builder setConnectTimeoutTimeUnit(TimeUnit connectTimeoutTimeUnit) {
-            this.connectTimeoutTimeUnit = connectTimeoutTimeUnit;
+        public Builder setConnectTimeout(Duration connectTimeout) {
+            this.connectTimeout = checkNotNullAndPositive(connectTimeout, "connectTimeout");
             return this;
         }
 
         public Builder setBrokerAddress(InetSocketAddress brokerAddress) {
-            this.brokerAddress = brokerAddress;
+            this.brokerAddress = checkNotNull(brokerAddress, "brokerAddress is null");
             return this;
         }
 
         public SMSTCPConnection build() {
             return new SMSTCPConnection(
-                    brokerAddress,
-                    reconnectDelay, reconnectDelayTimeUnit,
-                    connectTimeout, connectTimeoutTimeUnit);
+                    brokerAddress, reconnectDelay, connectTimeout);
         }
     }
 

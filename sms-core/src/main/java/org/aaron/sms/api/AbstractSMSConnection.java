@@ -12,12 +12,14 @@ import org.aaron.sms.util.RunState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.*;
+import static org.aaron.sms.util.DurationUtils.checkNotNullAndPositive;
 
 abstract class AbstractSMSConnection implements SMSConnection {
 
@@ -36,15 +38,10 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
     private final FunctionalReentrantReadWriteLock destroyLock = new FunctionalReentrantReadWriteLock();
 
-    private final long reconnectDelay;
+    private final Duration reconnectDelay;
 
-    private final TimeUnit reconnectDelayTimeUnit;
-
-    public AbstractSMSConnection(long reconnectDelay, TimeUnit reconnectDelayTimeUnit) {
-        checkArgument(reconnectDelay > 0, "reconnectDelay must be positive");
-        this.reconnectDelay = reconnectDelay;
-
-        this.reconnectDelayTimeUnit = checkNotNull(reconnectDelayTimeUnit, "reconnectDelayTimeUnit is null");
+    public AbstractSMSConnection(Duration reconnectDelay) {
+        this.reconnectDelay = checkNotNullAndPositive(reconnectDelay, "reconnectDelay");
     }
 
     @Override
@@ -104,7 +101,7 @@ abstract class AbstractSMSConnection implements SMSConnection {
     protected abstract EventLoopGroup getEventLoopGroup();
 
     private void reconnectAsync() {
-        reconnectAsync(reconnectDelay, reconnectDelayTimeUnit);
+        reconnectAsync(reconnectDelay.toMillis(), TimeUnit.MILLISECONDS);
     }
 
     private void reconnectAsync(long delay, TimeUnit delayTimeUnit) {
