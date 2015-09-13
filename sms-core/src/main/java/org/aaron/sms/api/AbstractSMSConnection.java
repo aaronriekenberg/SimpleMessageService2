@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.*;
+import static org.aaron.sms.protocol.SMSProtocolMessageUtil.buildClientToBrokerMessage;
 import static org.aaron.sms.util.DurationUtils.checkNotNullAndPositive;
 
 abstract class AbstractSMSConnection implements SMSConnection {
@@ -119,8 +120,9 @@ abstract class AbstractSMSConnection implements SMSConnection {
 
         LOG.debug("resubscribeToTopics {}", subscribedTopicToListener);
         subscribedTopicToListener.keySet()
-                .forEach(topicName -> connectedChannels.write(SMSProtocol.ClientToBrokerMessage.newBuilder()
-                        .setMessageType(ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC).setTopicName(topicName)));
+                .forEach(topicName -> connectedChannels.write(
+                        buildClientToBrokerMessage(
+                                ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC, topicName)));
         connectedChannels.flush();
     }
 
@@ -131,8 +133,9 @@ abstract class AbstractSMSConnection implements SMSConnection {
         checkNotNull(messageListener, "messageListener is null");
 
         if (subscribedTopicToListener.put(topicName, messageListener) == null) {
-            connectedChannels.writeAndFlush(SMSProtocol.ClientToBrokerMessage.newBuilder()
-                    .setMessageType(ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC).setTopicName(topicName));
+            connectedChannels.writeAndFlush(
+                    buildClientToBrokerMessage(
+                            ClientToBrokerMessageType.CLIENT_SUBSCRIBE_TO_TOPIC, topicName));
         }
     }
 
@@ -142,8 +145,9 @@ abstract class AbstractSMSConnection implements SMSConnection {
         checkArgument(topicName.length() > 0, "topicName is empty");
 
         if (subscribedTopicToListener.remove(topicName) != null) {
-            connectedChannels.writeAndFlush(SMSProtocol.ClientToBrokerMessage.newBuilder()
-                    .setMessageType(ClientToBrokerMessageType.CLIENT_UNSUBSCRIBE_FROM_TOPIC).setTopicName(topicName));
+            connectedChannels.writeAndFlush(
+                    buildClientToBrokerMessage(
+                            ClientToBrokerMessageType.CLIENT_UNSUBSCRIBE_FROM_TOPIC, topicName));
         }
     }
 
@@ -153,9 +157,9 @@ abstract class AbstractSMSConnection implements SMSConnection {
         checkArgument(topicName.length() > 0, "topicName is empty");
         checkNotNull(message, "message is null");
 
-        connectedChannels.writeAndFlush(SMSProtocol.ClientToBrokerMessage.newBuilder()
-                .setMessageType(ClientToBrokerMessageType.CLIENT_SEND_MESSAGE_TO_TOPIC).setTopicName(topicName)
-                .setMessagePayload(message));
+        connectedChannels.writeAndFlush(
+                buildClientToBrokerMessage(
+                        ClientToBrokerMessageType.CLIENT_SEND_MESSAGE_TO_TOPIC, topicName, message));
     }
 
     @Override

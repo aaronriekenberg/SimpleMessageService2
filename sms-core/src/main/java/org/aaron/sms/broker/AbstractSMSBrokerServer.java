@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static org.aaron.sms.protocol.SMSProtocolMessageUtil.buildBrokerToCLientMessage;
 
 abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
@@ -80,9 +81,11 @@ abstract class AbstractSMSBrokerServer implements SMSBrokerServer {
 
         switch (message.getMessageType()) {
             case CLIENT_SEND_MESSAGE_TO_TOPIC:
-                topic.write(SMSProtocol.BrokerToClientMessage.newBuilder()
-                        .setMessageType(BrokerToClientMessageType.BROKER_TOPIC_MESSAGE_PUBLISH).setTopicName(topicName)
-                        .setMessagePayload(message.getMessagePayload()).build());
+                topic.write(
+                        buildBrokerToCLientMessage(
+                                BrokerToClientMessageType.BROKER_TOPIC_MESSAGE_PUBLISH,
+                                topicName,
+                                message.getMessagePayload()));
                 break;
 
             case CLIENT_SUBSCRIBE_TO_TOPIC:
