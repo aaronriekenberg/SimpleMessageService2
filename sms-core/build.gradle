@@ -1,5 +1,5 @@
 dependencies {
     compile 'com.google.protobuf:protobuf-java:2.6.1'
     compile 'org.javassist:javassist:3.20.0-GA'
-    compile 'io.netty:netty-all:4.0.32.Final'
+    compile 'io.netty:netty-all:4.0.33.Final'
 }
