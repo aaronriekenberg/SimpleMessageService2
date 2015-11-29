@@ -6,6 +6,7 @@ import org.aaron.sms.api.SMSTCPConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -34,7 +35,8 @@ public class SMSTCPTestReceiver extends AbstractTestReceiver {
     @Override
     protected SMSConnection createConnection() {
         return SMSTCPConnection.newBuilder()
-                .setBrokerAddress(new InetSocketAddress("127.0.0.1", 10001))
+                .setBrokerAddress(new InetSocketAddress(
+                        InetAddress.getLoopbackAddress(), 10001))
                 .build();
     }
 
