@@ -28,7 +28,7 @@ public class SMSUnixTestReceiver extends AbstractTestReceiver {
                 .forEach(SMSUnixTestReceiver::start);
 
         while (true) {
-            Uninterruptibles.sleepUninterruptibly(60, TimeUnit.SECONDS);
+            Uninterruptibles.sleepUninterruptibly(1, TimeUnit.MINUTES);
         }
     }
 

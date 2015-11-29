@@ -27,7 +27,7 @@ public class SMSTCPTestReceiver extends AbstractTestReceiver {
                 .forEach(SMSTCPTestReceiver::start);
 
         while (true) {
-            Uninterruptibles.sleepUninterruptibly(60, TimeUnit.SECONDS);
+            Uninterruptibles.sleepUninterruptibly(1, TimeUnit.MINUTES);
         }
     }
 
