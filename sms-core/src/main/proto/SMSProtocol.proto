@@ -1,4 +1,4 @@
-package org.aaron.sms.protocol.protobuf;
+package sms.protocol.protobuf;
 
 option java_package = "org.aaron.sms.protocol.protobuf";
 
