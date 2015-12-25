@@ -24,7 +24,9 @@ public class SMSTCPTestReceiver extends AbstractTestReceiver {
     public static void main(String[] args) {
         LOG.info("NUM_RECEIVERS = {}", NUM_RECEIVERS);
 
-        IntStream.range(0, NUM_RECEIVERS).mapToObj(i -> "test.topic." + i).map(SMSTCPTestReceiver::new)
+        IntStream.range(0, NUM_RECEIVERS)
+                .mapToObj(i -> "test.topic." + i)
+                .map(SMSTCPTestReceiver::new)
                 .forEach(SMSTCPTestReceiver::start);
 
         while (true) {

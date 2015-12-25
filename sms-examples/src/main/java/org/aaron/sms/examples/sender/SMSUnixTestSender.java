@@ -31,8 +31,11 @@ public class SMSUnixTestSender extends AbstractTestSender {
         LOG.info("MESSAGE_SIZE_BYTES = {}", MESSAGE_SIZE_BYTES);
         LOG.info("SLEEP_BETWEEN_SENDS_MS = {}", SLEEP_BETWEEN_SENDS_MS);
 
-        final List<Thread> threadList = IntStream.range(0, NUM_SENDERS).mapToObj(i -> "test.topic." + i)
-                .map(SMSUnixTestSender::new).map(Thread::new).collect(Collectors.toList());
+        final List<Thread> threadList = IntStream.range(0, NUM_SENDERS)
+                .mapToObj(i -> "test.topic." + i)
+                .map(SMSUnixTestSender::new)
+                .map(Thread::new)
+                .collect(Collectors.toList());
 
         threadList.forEach(Thread::start);
 
