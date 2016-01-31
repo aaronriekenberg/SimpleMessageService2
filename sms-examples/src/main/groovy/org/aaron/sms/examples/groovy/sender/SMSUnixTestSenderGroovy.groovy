@@ -2,7 +2,6 @@ package org.aaron.sms.examples.groovy.sender
 
 import com.google.common.util.concurrent.Uninterruptibles
 import groovy.transform.CompileStatic
-import groovy.transform.InheritConstructors
 import groovy.util.logging.Slf4j
 import io.netty.channel.unix.DomainSocketAddress
 import org.aaron.sms.api.SMSConnection
@@ -11,7 +10,6 @@ import org.aaron.sms.api.SMSUnixConnection
 import java.nio.file.Paths
 
 @CompileStatic
-@InheritConstructors
 @Slf4j
 class SMSUnixTestSenderGroovy {
 
