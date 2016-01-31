@@ -21,11 +21,11 @@ class GroovyReceiver {
         final AtomicInteger messagesReceived = new AtomicInteger(0)
 
         smsConnection.registerConnectionStateListener({
-            newState -> log.info("connection state changed {}", newState)
+            newState -> log.info "connection state changed ${newState}"
         })
 
         smsConnection.subscribeToTopic(topicName, { ByteString message ->
-            log.debug('handleIncomingMessage topic {} length {}', topicName, message.size())
+            log.debug "handleIncomingMessage topic ${topicName} length ${message.size()}"
             messagesReceived.getAndIncrement()
         });
 
@@ -34,9 +34,9 @@ class GroovyReceiver {
         EXECUTOR.scheduleAtFixedRate(
                 {
                     try {
-                        log.info('{} messages received last second = {}', topicName, messagesReceived.getAndSet(0))
+                        log.info "${topicName} messages received last second = ${messagesReceived.getAndSet(0)}"
                     } catch (Throwable t) {
-                        log.warn('caught', t)
+                        log.warn('scheduleAtFixedRate caught', t)
                     }
                 }, 0, 1, TimeUnit.SECONDS
         )

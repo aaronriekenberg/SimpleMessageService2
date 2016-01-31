@@ -20,7 +20,7 @@ class GroovySenderRunnable implements Runnable {
     @Override
     void run() {
         smsConnection.registerConnectionStateListener({
-            newState -> log.info('connection state changed {}', newState)
+            newState -> log.info "connection state changed ${newState}"
         })
 
         smsConnection.start()

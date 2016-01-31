@@ -12,7 +12,7 @@ class SMSTCPTestReceiverGroovy {
     private static final int NUM_RECEIVERS = 50
 
     static void main(String[] args) {
-        log.info('NUM_RECEIVERS = {}', NUM_RECEIVERS)
+        log.info "NUM_RECEIVERS = ${NUM_RECEIVERS}"
 
         (0..NUM_RECEIVERS - 1).forEach({ i ->
             new GroovyReceiver(createConnection(), "test.topic.${i}")

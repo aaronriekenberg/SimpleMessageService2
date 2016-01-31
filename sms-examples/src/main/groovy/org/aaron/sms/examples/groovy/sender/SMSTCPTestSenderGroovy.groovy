@@ -17,9 +17,9 @@ class SMSTCPTestSenderGroovy {
     private static final long SLEEP_BETWEEN_SENDS_MS = 10
 
     static void main(String[] args) {
-        log.info('NUM_SENDERS = {}', NUM_SENDERS)
-        log.info('MESSAGE_SIZE_BYTES = {}', MESSAGE_SIZE_BYTES)
-        log.info('SLEEP_BETWEEN_SENDS_MS = {}', SLEEP_BETWEEN_SENDS_MS)
+        log.info "NUM_SENDERS = ${NUM_SENDERS}"
+        log.info "MESSAGE_SIZE_BYTES = ${MESSAGE_SIZE_BYTES}"
+        log.info "SLEEP_BETWEEN_SENDS_MS = ${SLEEP_BETWEEN_SENDS_MS}"
 
         final List<Thread> threadList = (0..NUM_SENDERS - 1).collect({ i ->
             Thread.start {
