@@ -21,14 +21,14 @@ class SMSTCPTestSenderGroovy {
         log.info('MESSAGE_SIZE_BYTES = {}', MESSAGE_SIZE_BYTES)
         log.info('SLEEP_BETWEEN_SENDS_MS = {}', SLEEP_BETWEEN_SENDS_MS)
 
-        final List<Thread> threadList = (0..NUM_SENDERS-1).collect({i ->
-            Thread t = new Thread(new GroovySenderRunnable(
-                    smsConnection: createConnection(),
-                    topicName: "test.topic.${i}",
-                    messageSizeBytes: MESSAGE_SIZE_BYTES,
-                    sleepBetweenSendsMS: SLEEP_BETWEEN_SENDS_MS))
-            t.start()
-            t
+        final List<Thread> threadList = (0..NUM_SENDERS - 1).collect({ i ->
+            Thread.start {
+                new GroovySenderRunnable(
+                        smsConnection: createConnection(),
+                        topicName: "test.topic.${i}",
+                        messageSizeBytes: MESSAGE_SIZE_BYTES,
+                        sleepBetweenSendsMS: SLEEP_BETWEEN_SENDS_MS).run()
+            }
         })
 
         threadList.forEach({ Thread t -> Uninterruptibles.joinUninterruptibly(t) })

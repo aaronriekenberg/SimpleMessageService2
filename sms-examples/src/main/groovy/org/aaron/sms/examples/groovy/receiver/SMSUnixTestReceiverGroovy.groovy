@@ -17,7 +17,7 @@ class SMSUnixTestReceiverGroovy {
     static void main(String[] args) {
         log.info('NUM_RECEIVERS = {}', NUM_RECEIVERS)
 
-        (0..NUM_RECEIVERS-1).forEach({ i ->
+        (0..NUM_RECEIVERS - 1).forEach({ i ->
             new GroovyReceiver(createConnection(), "test.topic.${i}")
         })
 

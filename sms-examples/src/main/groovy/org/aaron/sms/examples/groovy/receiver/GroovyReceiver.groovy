@@ -14,7 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger
 @Slf4j
 class GroovyReceiver {
 
-    private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors())
+    private static
+    final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors())
 
     GroovyReceiver(SMSConnection smsConnection, String topicName) {
         final AtomicInteger messagesReceived = new AtomicInteger(0)
