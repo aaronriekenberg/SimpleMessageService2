@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.aaron.sms.api.SMSConnection
+import org.aaron.sms.api.SMSConnectionStateListener
 
 @CompileStatic
 @Slf4j
@@ -19,9 +20,8 @@ class GroovySenderRunnable implements Runnable {
 
     @Override
     void run() {
-        smsConnection.registerConnectionStateListener({
-            newState -> log.info "connection state changed ${newState}"
-        })
+        smsConnection.registerConnectionStateListener(
+                SMSConnectionStateListener.createLoggingListener(log))
 
         smsConnection.start()
 
