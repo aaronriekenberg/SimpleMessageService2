@@ -7,18 +7,18 @@ import org.aaron.sms.api.SMSConnection
 
 @CompileStatic
 @Slf4j
-abstract class AbstractTestSenderGroovy implements Runnable {
+class GroovySenderRunnable implements Runnable {
+
+    SMSConnection smsConnection
 
     String topicName
 
-    int messageSizeBytes
+    long messageSizeBytes
 
     long sleepBetweenSendsMS
 
     @Override
     void run() {
-        final SMSConnection smsConnection = createConnection()
-
         smsConnection.registerConnectionStateListener({
             newState -> log.info('connection state changed {}', newState)
         })
@@ -32,5 +32,4 @@ abstract class AbstractTestSenderGroovy implements Runnable {
         }
     }
 
-    abstract SMSConnection createConnection()
 }

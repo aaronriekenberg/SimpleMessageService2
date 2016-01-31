@@ -2,15 +2,13 @@ package org.aaron.sms.examples.groovy.sender
 
 import com.google.common.util.concurrent.Uninterruptibles
 import groovy.transform.CompileStatic
-import groovy.transform.InheritConstructors
 import groovy.util.logging.Slf4j
 import org.aaron.sms.api.SMSConnection
 import org.aaron.sms.api.SMSTCPConnection
 
 @CompileStatic
-@InheritConstructors
 @Slf4j
-class SMSTCPTestSenderGroovy extends AbstractTestSenderGroovy {
+class SMSTCPTestSenderGroovy {
 
     private static final int NUM_SENDERS = 50
 
@@ -24,7 +22,8 @@ class SMSTCPTestSenderGroovy extends AbstractTestSenderGroovy {
         log.info('SLEEP_BETWEEN_SENDS_MS = {}', SLEEP_BETWEEN_SENDS_MS)
 
         final List<Thread> threadList = (0..NUM_SENDERS-1).collect({i ->
-            Thread t = new Thread(new SMSTCPTestSenderGroovy(
+            Thread t = new Thread(new GroovySenderRunnable(
+                    smsConnection: createConnection(),
                     topicName: "test.topic.${i}",
                     messageSizeBytes: MESSAGE_SIZE_BYTES,
                     sleepBetweenSendsMS: SLEEP_BETWEEN_SENDS_MS))
@@ -35,8 +34,7 @@ class SMSTCPTestSenderGroovy extends AbstractTestSenderGroovy {
         threadList.forEach({ Thread t -> Uninterruptibles.joinUninterruptibly(t) })
     }
 
-    @Override
-    SMSConnection createConnection() {
+    static SMSConnection createConnection() {
         SMSTCPConnection.newBuilder()
                 .setBrokerAddress(new InetSocketAddress(
                 InetAddress.getLoopbackAddress(), 10001))

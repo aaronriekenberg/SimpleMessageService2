@@ -12,16 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @CompileStatic
 @Slf4j
-abstract class AbstractTestReceiverGroovy {
+class GroovyReceiver {
 
     private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors())
 
-    private final AtomicInteger messagesReceived = new AtomicInteger(0)
-
-    String topicName
-
-    void start() {
-        final SMSConnection smsConnection = createConnection()
+    GroovyReceiver(SMSConnection smsConnection, String topicName) {
+        final AtomicInteger messagesReceived = new AtomicInteger(0)
 
         smsConnection.registerConnectionStateListener({
             newState -> log.info("connection state changed {}", newState)
@@ -44,6 +40,4 @@ abstract class AbstractTestReceiverGroovy {
                 }, 0, 1, TimeUnit.SECONDS
         )
     }
-
-    abstract SMSConnection createConnection()
 }

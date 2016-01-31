@@ -13,7 +13,7 @@ import java.nio.file.Paths
 @CompileStatic
 @InheritConstructors
 @Slf4j
-class SMSUnixTestSenderGroovy extends AbstractTestSenderGroovy {
+class SMSUnixTestSenderGroovy {
 
     private static final int NUM_SENDERS = 50
 
@@ -27,7 +27,8 @@ class SMSUnixTestSenderGroovy extends AbstractTestSenderGroovy {
         log.info('SLEEP_BETWEEN_SENDS_MS = {}', SLEEP_BETWEEN_SENDS_MS)
 
         final List<Thread> threadList = (0..NUM_SENDERS-1).collect({i ->
-            Thread t = new Thread(new SMSUnixTestSenderGroovy(
+            Thread t = new Thread(new GroovySenderRunnable(
+                    smsConnection: createConnection(),
                     topicName: "test.topic.${i}",
                     messageSizeBytes: MESSAGE_SIZE_BYTES,
                     sleepBetweenSendsMS: SLEEP_BETWEEN_SENDS_MS))
@@ -38,8 +39,7 @@ class SMSUnixTestSenderGroovy extends AbstractTestSenderGroovy {
         threadList.forEach({ Thread t -> Uninterruptibles.joinUninterruptibly(t) })
     }
 
-    @Override
-    SMSConnection createConnection() {
+    static SMSConnection createConnection() {
         SMSUnixConnection.newBuilder()
                 .setBrokerAddress(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()))
                 .build()
