@@ -19,7 +19,7 @@ class GroovyReceiver {
     final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors())
 
     GroovyReceiver(SMSConnection smsConnection, String topicName) {
-        final AtomicInteger messagesReceived = new AtomicInteger(0)
+        AtomicInteger messagesReceived = new AtomicInteger(0)
 
         smsConnection.registerConnectionStateListener(
                 SMSConnectionStateListener.createLoggingListener(log))
@@ -33,11 +33,8 @@ class GroovyReceiver {
 
         EXECUTOR.scheduleAtFixedRate(
                 {
-                    try {
-                        log.info "${topicName} messages received last second = ${messagesReceived.getAndSet(0)}"
-                    } catch (Throwable t) {
-                        log.warn('scheduleAtFixedRate caught', t)
-                    }
+                    int currentMessagesReceived = messagesReceived.getAndSet(0)
+                    log.info "${topicName} messages received last second = ${currentMessagesReceived}"
                 }, 0, 1, TimeUnit.SECONDS
         )
     }
