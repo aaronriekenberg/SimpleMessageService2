@@ -1,15 +1,12 @@
 package org.aaron.sms.examples.groovy.broker
 
-import groovy.transform.CompileStatic
+import groovy.time.TimeCategory
 import groovy.util.logging.Slf4j
 import io.netty.channel.unix.DomainSocketAddress
 import org.aaron.sms.broker.SMSBroker
 
 import java.nio.file.Paths
 
-import static groovy.time.TimeCategory.getMinute
-
-@CompileStatic
 @Slf4j
 class SMSBrokerMainGroovy {
 
@@ -19,8 +16,10 @@ class SMSBrokerMainGroovy {
                 .addUnixServer(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()))
                 .build().start()
 
-        while (true) {
-            sleep(getMinute(1).millis)
+        use(TimeCategory) {
+            while (true) {
+                sleep 1.minute.toMilliseconds()
+            }
         }
     }
 }
