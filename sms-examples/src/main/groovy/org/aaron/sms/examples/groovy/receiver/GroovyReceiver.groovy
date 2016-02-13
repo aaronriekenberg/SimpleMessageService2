@@ -27,7 +27,7 @@ class GroovyReceiver {
         smsConnection.subscribeToTopic(topicName, { ByteString message ->
             log.debug "handleIncomingMessage topic ${topicName} length ${message.size()}"
             messagesReceived.getAndIncrement()
-        });
+        })
 
         smsConnection.start()
 
