@@ -7,6 +7,8 @@ import org.aaron.sms.broker.SMSBroker
 
 import java.nio.file.Paths
 
+import static groovy.time.TimeCategory.getMinute
+
 @CompileStatic
 @Slf4j
 class SMSBrokerMainGroovy {
@@ -18,7 +20,7 @@ class SMSBrokerMainGroovy {
                 .build().start()
 
         while (true) {
-            sleep(60 * 1000)
+            sleep(getMinute(1).millis)
         }
     }
 }
