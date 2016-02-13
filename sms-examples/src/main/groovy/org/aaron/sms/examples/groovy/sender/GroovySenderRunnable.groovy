@@ -14,7 +14,7 @@ class GroovySenderRunnable implements Runnable {
 
     String topicName
 
-    long messageSizeBytes
+    int messageSizeBytes
 
     long sleepBetweenSendsMS
 
