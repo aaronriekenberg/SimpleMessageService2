@@ -19,7 +19,7 @@ class SMSTCPTestSenderGroovy {
         log.info "MESSAGE_SIZE_BYTES = ${MESSAGE_SIZE_BYTES}"
         log.info "SLEEP_BETWEEN_SENDS_MS = ${SLEEP_BETWEEN_SENDS_MS}"
 
-        final List<Thread> threadList = (0..NUM_SENDERS - 1).collect { i ->
+        final List<Thread> threadList = (0..<NUM_SENDERS).collect { i ->
             Thread.start {
                 new GroovySenderRunnable(
                         smsConnection: createConnection(),
