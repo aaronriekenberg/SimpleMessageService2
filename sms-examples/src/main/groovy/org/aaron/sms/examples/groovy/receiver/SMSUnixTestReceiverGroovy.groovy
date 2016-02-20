@@ -11,12 +11,12 @@ import java.nio.file.Paths
 @Slf4j
 class SMSUnixTestReceiverGroovy {
 
-    private static final int NUM_RECEIVERS = 50
+    private static final Integer NUM_RECEIVERS = 50
 
     static void main(String[] args) {
         log.info "NUM_RECEIVERS = ${NUM_RECEIVERS}"
 
-        (0..NUM_RECEIVERS - 1).each { i ->
+        NUM_RECEIVERS.times { i ->
             new GroovyReceiver(createConnection(), "test.topic.${i}")
         }
 
