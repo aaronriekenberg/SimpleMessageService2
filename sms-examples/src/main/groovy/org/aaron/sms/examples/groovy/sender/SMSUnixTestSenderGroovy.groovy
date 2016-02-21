@@ -23,13 +23,13 @@ class SMSUnixTestSenderGroovy {
         log.info "SLEEP_BETWEEN_SENDS_MS = ${SLEEP_BETWEEN_SENDS_MS}"
 
         final List<Thread> threadList = (0..<NUM_SENDERS).collect { i ->
-            Thread.start {
-                new GroovySenderRunnable(
-                        smsConnection: createConnection(),
-                        topicName: "test.topic.${i}",
-                        messageSizeBytes: MESSAGE_SIZE_BYTES,
-                        sleepBetweenSendsMS: SLEEP_BETWEEN_SENDS_MS).run()
-            }
+            GroovySenderRunnable runnable =
+                    new GroovySenderRunnable(
+                            smsConnection: createConnection(),
+                            topicName: "test.topic.${i}",
+                            messageSizeBytes: MESSAGE_SIZE_BYTES,
+                            sleepBetweenSendsMS: SLEEP_BETWEEN_SENDS_MS)
+            Thread.start runnable.&run
         }
 
         threadList.each { t -> Uninterruptibles.joinUninterruptibly(t) }
