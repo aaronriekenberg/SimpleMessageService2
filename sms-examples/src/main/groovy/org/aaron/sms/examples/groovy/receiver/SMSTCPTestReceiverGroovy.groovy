@@ -26,8 +26,7 @@ class SMSTCPTestReceiverGroovy {
 
     static SMSConnection createConnection() {
         SMSTCPConnection.newBuilder()
-                .setBrokerAddress(
-                new InetSocketAddress(InetAddress.getLoopbackAddress(), 10001))
+                .setBrokerAddress(new InetSocketAddress(InetAddress.getLoopbackAddress(), 10001))
                 .build()
     }
 }
