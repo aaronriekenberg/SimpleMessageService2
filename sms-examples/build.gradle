@@ -1,4 +1,4 @@
 dependencies {
     compile project(':sms-core')
-    compile 'org.codehaus.groovy:groovy-all:2.4.5:indy'
+    compile 'org.codehaus.groovy:groovy-all:2.4.6:indy'
 }
