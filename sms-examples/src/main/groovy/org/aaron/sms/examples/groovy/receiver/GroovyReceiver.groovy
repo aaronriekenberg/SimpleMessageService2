@@ -38,4 +38,16 @@ class GroovyReceiver {
                 }, 0, 1, TimeUnit.SECONDS
         )
     }
+
+    static void createAndRun(int numReceivers, Closure<SMSConnection> smsConnectionClosure) {
+        log.info "numReceivers = ${numReceivers}"
+
+        (0..<numReceivers).each { i ->
+            new GroovyReceiver(smsConnectionClosure(), "test.topic.${i}")
+        }
+
+        while (true) {
+            sleep TimeUnit.MINUTES.toMillis(1)
+        }
+    }
 }

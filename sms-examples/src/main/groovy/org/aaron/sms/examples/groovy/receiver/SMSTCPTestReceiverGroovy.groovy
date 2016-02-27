@@ -1,6 +1,5 @@
 package org.aaron.sms.examples.groovy.receiver
 
-import groovy.time.TimeCategory
 import groovy.util.logging.Slf4j
 import org.aaron.sms.api.SMSConnection
 import org.aaron.sms.api.SMSTCPConnection
@@ -11,17 +10,7 @@ class SMSTCPTestReceiverGroovy {
     private static final Integer NUM_RECEIVERS = 50
 
     static void main(String[] args) {
-        log.info "NUM_RECEIVERS = ${NUM_RECEIVERS}"
-
-        (0..<NUM_RECEIVERS).each { i ->
-            new GroovyReceiver(createConnection(), "test.topic.${i}")
-        }
-
-        use(TimeCategory) {
-            while (true) {
-                sleep 1.minute.toMilliseconds()
-            }
-        }
+        GroovyReceiver.createAndRun(NUM_RECEIVERS, SMSTCPTestReceiverGroovy.&createConnection)
     }
 
     static SMSConnection createConnection() {
