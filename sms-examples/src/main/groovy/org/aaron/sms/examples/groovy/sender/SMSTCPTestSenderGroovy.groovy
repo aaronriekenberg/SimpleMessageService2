@@ -14,7 +14,7 @@ class SMSTCPTestSenderGroovy {
     private static final long SLEEP_BETWEEN_SENDS_MS = 10
 
     static void main(String[] args) {
-        GroovySenderRunnable.createAndRun(NUM_SENDERS, MESSAGE_SIZE_BYTES, SLEEP_BETWEEN_SENDS_MS, SMSTCPTestSenderGroovy.&createConnection)
+        GroovySenderRunnable.createAndRunSenders(NUM_SENDERS, MESSAGE_SIZE_BYTES, SLEEP_BETWEEN_SENDS_MS, SMSTCPTestSenderGroovy.&createConnection)
     }
 
     static SMSConnection createConnection() {

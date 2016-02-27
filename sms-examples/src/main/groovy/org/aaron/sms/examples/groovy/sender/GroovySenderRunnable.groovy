@@ -33,7 +33,7 @@ class GroovySenderRunnable implements Runnable {
         }
     }
 
-    static void createAndRun(int numSenders, int messageSizeBytes, long sleepBetweenSendsMS, Closure<SMSConnection> smsConnectionClosure) {
+    static void createAndRunSenders(int numSenders, int messageSizeBytes, long sleepBetweenSendsMS, Closure<SMSConnection> smsConnectionClosure) {
         log.info "numSenders = ${numSenders}"
         log.info "messageSizeBytes = ${messageSizeBytes}"
         log.info "sleepBetweenSendsMS = ${sleepBetweenSendsMS}"

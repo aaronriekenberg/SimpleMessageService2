@@ -39,7 +39,7 @@ class GroovyReceiver {
         )
     }
 
-    static void createAndRun(int numReceivers, Closure<SMSConnection> smsConnectionClosure) {
+    static void createAndRunReceivers(int numReceivers, Closure<SMSConnection> smsConnectionClosure) {
         log.info "numReceivers = ${numReceivers}"
 
         (0..<numReceivers).each { i ->

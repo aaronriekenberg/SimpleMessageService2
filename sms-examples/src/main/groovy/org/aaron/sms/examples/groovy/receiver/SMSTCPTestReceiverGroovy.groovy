@@ -10,7 +10,7 @@ class SMSTCPTestReceiverGroovy {
     private static final Integer NUM_RECEIVERS = 50
 
     static void main(String[] args) {
-        GroovyReceiver.createAndRun(NUM_RECEIVERS, SMSTCPTestReceiverGroovy.&createConnection)
+        GroovyReceiver.createAndRunReceivers(NUM_RECEIVERS, SMSTCPTestReceiverGroovy.&createConnection)
     }
 
     static SMSConnection createConnection() {
