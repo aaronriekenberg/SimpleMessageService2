@@ -9,7 +9,7 @@ import org.aaron.sms.api.SMSConnectionStateListener
 
 @CompileStatic
 @Slf4j
-class GroovySenderRunnable implements Runnable {
+class GroovySender implements Runnable {
 
     SMSConnection smsConnection
 
@@ -40,8 +40,8 @@ class GroovySenderRunnable implements Runnable {
 
         final List<Thread> threadList = (0..<numSenders).collect { i ->
             String topicName = "test.topic.${i}"
-            GroovySenderRunnable runnable =
-                    new GroovySenderRunnable(
+            GroovySender runnable =
+                    new GroovySender(
                             smsConnection: smsConnectionClosure(),
                             topicName: topicName,
                             messageSizeBytes: messageSizeBytes,
