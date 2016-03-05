@@ -39,7 +39,7 @@ class GroovySender implements Runnable {
         log.info "sleepBetweenSendsMS = ${sleepBetweenSendsMS}"
 
         final List<Thread> threadList = (0..<numSenders).collect { i ->
-            String topicName = "test.topic.${i}"
+            GString topicName = "test.topic.${i}"
             GroovySender runnable =
                     new GroovySender(
                             smsConnection: smsConnectionClosure(),
