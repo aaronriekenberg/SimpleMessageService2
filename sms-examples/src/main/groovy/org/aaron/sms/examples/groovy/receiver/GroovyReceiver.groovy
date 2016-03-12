@@ -18,7 +18,7 @@ class GroovyReceiver {
     private static
     final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors())
 
-    GroovyReceiver(SMSConnection smsConnection, String topicName) {
+    GroovyReceiver(SMSConnection smsConnection, GString topicName) {
         AtomicInteger messagesReceived = new AtomicInteger(0)
 
         smsConnection.registerConnectionStateListener(

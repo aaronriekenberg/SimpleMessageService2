@@ -13,7 +13,7 @@ class GroovySender implements Runnable {
 
     SMSConnection smsConnection
 
-    String topicName
+    GString topicName
 
     int messageSizeBytes
 
