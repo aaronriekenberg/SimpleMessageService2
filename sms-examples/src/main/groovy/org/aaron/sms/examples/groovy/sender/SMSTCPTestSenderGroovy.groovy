@@ -3,6 +3,7 @@ package org.aaron.sms.examples.groovy.sender
 import groovy.util.logging.Slf4j
 import org.aaron.sms.api.SMSConnection
 import org.aaron.sms.api.SMSTCPConnection
+import org.aaron.sms.examples.groovy.util.GroovyConstants
 
 @Slf4j
 class SMSTCPTestSenderGroovy {
@@ -19,8 +20,7 @@ class SMSTCPTestSenderGroovy {
 
     static SMSConnection createConnection() {
         SMSTCPConnection.newBuilder()
-                .setBrokerAddress(new InetSocketAddress(
-                InetAddress.getLoopbackAddress(), 10001))
+                .setBrokerAddress(GroovyConstants.TCP_BROKER_CONNECT_ADDRESS)
                 .build();
     }
 }

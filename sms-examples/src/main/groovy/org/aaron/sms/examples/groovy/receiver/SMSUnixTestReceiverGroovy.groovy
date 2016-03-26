@@ -1,11 +1,9 @@
 package org.aaron.sms.examples.groovy.receiver
 
 import groovy.util.logging.Slf4j
-import io.netty.channel.unix.DomainSocketAddress
 import org.aaron.sms.api.SMSConnection
 import org.aaron.sms.api.SMSUnixConnection
-
-import java.nio.file.Paths
+import org.aaron.sms.examples.groovy.util.GroovyConstants
 
 @Slf4j
 class SMSUnixTestReceiverGroovy {
@@ -18,7 +16,7 @@ class SMSUnixTestReceiverGroovy {
 
     static SMSConnection createConnection() {
         SMSUnixConnection.newBuilder()
-                .setBrokerAddress(new DomainSocketAddress(Paths.get("/tmp", "sms-unix-socket").toFile()))
+                .setBrokerAddress(GroovyConstants.UNIX_ADDRESS)
                 .build();
     }
 }
